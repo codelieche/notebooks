@@ -3,7 +3,9 @@
 ## 目录
 - [基础](./base/)
     1. [项目准备](./base/01-项目准备.md)
-
+    2. [settings基本配置](.base/02-settings基本配置.md)
+- [Middleware](./middleware)
+    1. [middleware的调用过程](./middleware/01-中间件的调用过程.md)
 
 ## 项目准备
 - 安装好[pyenv](https://github.com/pyenv/pyenv)

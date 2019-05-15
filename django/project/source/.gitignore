@@ -1,0 +1,10 @@
+
+.DS_modules
+.DS_Store
+
+*.css.map
+.sass-cache
+
+*.pyc
+**/migrations/*.py
+!**/migrations/__init__.py
