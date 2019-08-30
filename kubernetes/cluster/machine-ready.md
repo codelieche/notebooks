@@ -32,9 +32,16 @@ hostnamectl set-hostname ubuntu238
 
 **安装基本工具**
 
-    ```bash
-apt-get install -y vim tree telnet tcpdump wget rsync
-    ```
+    apt-get install -y vim tree telnet tcpdump wget rsync
+**修改/etc/hosts**
+
+```bash
+echo "192.168.6.238     ubuntu238
+192.168.6.239     ubuntu239
+192.168.6.240     ubuntu240" >> /etc/hosts
+```
+
+
 
 **设置三台机器互相ssh免密登录**
 
