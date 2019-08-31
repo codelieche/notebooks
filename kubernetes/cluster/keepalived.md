@@ -126,7 +126,7 @@
    
    # 添加配置文件
    
-   cat >/etc/keepalived/keepalived.conf <<EOL
+   cat >/etc/keepalived/keepalived.conf <<EOF
    # 192.168.6.238
    
    global_defs {
@@ -181,7 +181,7 @@
        }
    }
    
-   <<EOL
+   EOF
    
    systemctl enable keepalived && systemctl restart keepalived
    

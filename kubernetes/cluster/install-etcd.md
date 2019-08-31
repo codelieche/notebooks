@@ -247,6 +247,9 @@ ETCD节点：
   
   # 移动到PATH路径
   mv ./download/etcd/etcd* /usr/local/bin/
+  
+  # 删掉download目录
+  rm -rf ./download/
   ```
 
 
@@ -349,8 +352,6 @@ ETCD节点：
   ```bash
   bash /root/kubernetes/etcd/generate_etcd_service.sh
   ```
-
-
 
 ### 验证etcd服务
 

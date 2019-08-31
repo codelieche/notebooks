@@ -305,6 +305,8 @@
   - 从ubuntu238拷贝/etc/kubenetes文件
 
     ```bash
+    # 记得删掉网络相关的配置
+    root@ubuntu239:~# rm -rf /etc/cni/net.d/*
     root@ubuntu239:~/kubernetes# rm -rf /etc/kubernetes/
     root@ubuntu239:~/kubernetes# mkdir /etc/kubernetes/
     root@ubuntu239:~/kubernetes# scp -r root@192.168.6.238:/etc/kubernetes/pki/ /etc/kubernetes/
@@ -324,24 +326,50 @@
         ├── front-proxy-client.key
         ├── sa.key
         └── sa.pub
-     # 删除容器
-     root@ubuntu239:~/kubernetes# docker ps | awk '{print $1}' | xargs docker rm --force
+     # 删除容器 reset的时候把所有相关容器都删掉了
+   # root@ubuntu239:~/kubernetes# docker ps | awk '{print $1}' | xargs docker rm --force
     ```
 
+  - 调整下`kubeadm.yaml`
+  
+    - **注意：**把name由`ubuntu238`改成`ubuntu239`
+    
   - 执行 `kubeadm init --config ./kubeadm.yaml`
-
+  
     ```bash
     root@ubuntu239:~/kubernetes# kubeadm init --config ./kubeadm.yaml
     W0830 05:35:43.390312   25214 strict.go:47] unknown configuration 
-    # ......
+  # ......
     Then you can join any number of worker nodes by running the following on each as root:
-    
+  
     kubeadm join 192.168.6.236:6443 --token abcdef.0123456789abcdef \
         --discovery-token-ca-cert-hash sha256:035fd4fcb21aaf56f3a15f4fda1deea20fce56d6be8973374e82dce823219f9f
     ```
-
-    
-
+  
+  - **再次通过以上方式把`ubuntu240`也升级为`master`**
+  
+  - 再次查看节点:
+  
+    ```bash
+    root@ubuntu240:~/kubernetes# kubectl get nodes
+    NAME        STATUS   ROLES    AGE     VERSION
+    ubuntu238   Ready    master   16h     v1.15.3
+    ubuntu239   Ready    master   6m31s   v1.15.3
+    ubuntu240   Ready    master   64s     v1.15.3
+    ```
+  
+  - **开启master调度pod：**
+  
+    ```bash
+    kubectl taint nodes ubuntu239 node-role.kubernetes.io/master-
+    kubectl taint nodes ubuntu240 node-role.kubernetes.io/master-
+    ```
+  
+  - 取消master上调度pod
+  
+    ```bash
+    kubectl taint node ubuntu239 node-role.kubernetes.io/master=""
+    ```
   
 
 ### 遇到问题
@@ -368,8 +396,24 @@
 
   - 关闭swap：`swapoff -a`
   - 注释掉`/etc/fstab`中关于swap的行
+  
+- `network: failed to set bridge addr: "cni0" already has an IP address different from 172.56.1.1/24`
 
+  - 原因：`执行kubeadm reset的时候未删掉网络插件`
 
+  - **解决方式**：重新执行一次kubeadm reset，然后删除掉相关目录复制证书等操作和kubeadm init
+
+    ```bash
+    kubeadm reset
+    rm -rf /etc/cni/net.d/*
+    rm -rf /etc/kubernetes/
+    mkdir /etc/kubernetes/
+    scp -r root@192.168.6.238:/etc/kubernetes/pki/ /etc/kubernetes/
+    
+    kubeadm init --config ./kubeadm.yaml
+    ```
+
+    
 
 ### kubeadm init --config ./kubeadm.yaml输出日志
 
@@ -444,5 +488,77 @@
       --discovery-token-ca-cert-hash sha256:035fd4fcb21aaf56f3a15f4fda1deea20fce56d6be8973374e82dce823219f9f
   ```
 
+
+
+
+### Hello World
+
+- 创建个Deployment: `simpleweb-v1`
+
+  ```bash
+  root@ubuntu238:~# kubectl run simpleweb-v1 --image=codelieche/simpleweb:v1 --port=80
+  kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead.
+  deployment.apps/simpleweb-v1 created
   
+  root@ubuntu238:~# kubectl get deployment
+  NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+  simpleweb-v1   1/1     1            1           83s
+  
+  root@ubuntu238:~# kubectl get pods -o wide
+  NAME                            READY   STATUS    RESTARTS   AGE   IP           NODE        NOMINATED NODE   READINESS GATES
+  simpleweb-v1-79ccccd8d9-c9rq6   1/1     Running   0          85s   172.56.2.8   ubuntu240   <none>           <none>
+  
+  root@ubuntu238:~# curl 172.56.2.8
+  Host:simpleweb-v1-79ccccd8d9-c9rq6	IP:172.56.2.8	Version:1
+  ```
+
+- 扩缩容
+
+  - `kubectl scale deployment/simpleweb-v1 --replicas=5`
+
+    ```bash
+    root@ubuntu238:~# kubectl scale deployment/simpleweb-v1 --replicas=5
+    deployment.extensions/simpleweb-v1 scaled
+    
+    root@ubuntu238:~# kubectl get pods -o wide
+    NAME                            READY   STATUS    RESTARTS   AGE    IP            NODE        NOMINATED NODE   READINESS GATES
+    simpleweb-v1-79ccccd8d9-c89hr   1/1     Running   0          6s     172.56.1.5    ubuntu239   <none>           <none>
+    simpleweb-v1-79ccccd8d9-c9rq6   1/1     Running   0          6m1s   172.56.2.8    ubuntu240   <none>           <none>
+    simpleweb-v1-79ccccd8d9-d78cf   1/1     Running   0          6s     172.56.2.14   ubuntu240   <none>           <none>
+    simpleweb-v1-79ccccd8d9-nsgbq   1/1     Running   0          6s     172.56.2.13   ubuntu240   <none>           <none>
+    simpleweb-v1-79ccccd8d9-vh4hm   1/1     Running   0          6s     172.56.1.6    ubuntu239   <none>           <none>
+    ```
+
+- 滚动更新: `kubectl set image`
+
+  ```bash
+  root@ubuntu238:~# kubectl set image deployments/simpleweb-v1 simpleweb-v1=codelieche/simpleweb:v2
+  deployment.extensions/simpleweb-v1 image updated
+  ```
+
+- 退回上次的版本：`kubectl rollout undo`
+
+  ```bash
+  root@ubuntu238:~# kubectl rollout undo deployments/simpleweb-v1
+  deployment.extensions/simpleweb-v1 rolled back
+  ```
+
+- 创建Service
+
+  ```bash
+  root@ubuntu238:~# kubectl expose deployment simpleweb-v1 --port=80 --target-port=80
+  service/simpleweb-v1 exposed
+  root@ubuntu238:~# kubectl get services
+  NAME           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+  kubernetes     ClusterIP   10.112.0.1       <none>        443/TCP   18h
+  simpleweb-v1   ClusterIP   10.126.237.156   <none>        80/TCP    7s
+  ```
+
+  通过service的ip访问系统：
+
+  ```bash
+  watch -d curl 10.126.237.156
+  ```
+
+  这样会发现它会返回不同的内容。
 
