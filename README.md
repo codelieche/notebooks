@@ -3,6 +3,7 @@
 
 
 ## Contents
+- [kubernetes](./kubernetes)
 - [Django](./django)
 - [Performance](.performance)
 - [Dockerfile](./Dockerfile)
