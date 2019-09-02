@@ -493,7 +493,7 @@
 
   ```bash
   root@ubuntu238:~# kubeadm token create --print-join-command
-  kubeadm join 10.90.1.236:6443 --token oyfeiy.bhyxgku8kh89yq1e     --discovery-token-ca-cert-hash sha256:035fd4fcb21aaf56f3a15f4fda1deea20fce56d6be8973374e82dce823219f9f
+  kubeadm join 192.168.6.236:6443 --token oyfeiy.bhyxgku8kh89yq1e     --discovery-token-ca-cert-hash sha256:035fd4fcb21aaf56f3a15f4fda1deea20fce56d6be8973374e82dce823219f9f
   ```
 
   
