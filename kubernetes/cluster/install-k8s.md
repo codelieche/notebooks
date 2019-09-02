@@ -327,9 +327,10 @@
         ├── sa.key
         └── sa.pub
      # 删除容器 reset的时候把所有相关容器都删掉了
-   # root@ubuntu239:~/kubernetes# docker ps | awk '{print $1}' | xargs docker rm --force
     ```
-
+   # root@ubuntu239:~/kubernetes# docker ps | awk '{print $1}' | xargs docker rm --force
+  ```
+  
   - 调整下`kubeadm.yaml`
   
     - **注意：**把name由`ubuntu238`改成`ubuntu239`
@@ -498,7 +499,22 @@
 
   
 
+### kubectl命令自动补全
 
+- 参考：https://kubernetes.io/docs/tasks/tools/install-kubectl/#optional-kubectl-configurations
+
+- 执行命令：
+
+  ```bash
+  apt-get install bash-completion -y
+  echo 'source <(kubectl completion bash)' >>~/.bashrc
+  kubectl completion bash >/etc/bash_completion.d/kubectl
+  
+  # 使当前终端生效
+  source /usr/share/bash-completion/bash_completion
+  ```
+
+- 再次使用kubect按table就会自动提示了
 
 ### Hello World
 

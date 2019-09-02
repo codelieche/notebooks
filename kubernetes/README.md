@@ -2,8 +2,6 @@
 
 
 
-
-
 ### 目录
 
 #### 集群相关
@@ -13,7 +11,10 @@
 - [安装kubernetes集群准备指---etcd](./cluster/install-etcd.md)
 - [通过kubeadm安装kubernetes集群](./cluster/install-k8s.md)
 
+### Pod
 
+- [Pod Hello World](./pod/hello-world.md)
+- [Pod的Status](./pod/status.md)
 
 #### 问题
 
