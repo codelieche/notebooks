@@ -1,0 +1,20 @@
+apiVersion: apps/v1      # 当前配置格式的版本
+kind: Deployment         # 当前要创建的资源类型，这里是Deployment
+metadata:                # 该资源的源数据
+  name: simpleweb        # name是必须的，另外有namespace、label等
+spec:                    # 该资源的规格说明
+  selector:            
+    matchLabels:         # 匹配pod的标签
+      app: simpleweb
+  replicas: 1            # 副本数量，默认是1
+  template:              # 定义Pod资源的模板【重要部分】
+    metadata:            # 这里是Pod资源的源数据
+      labels:            # 设置标签
+        app: simpleweb   # 这里设置了app=simpleweb的标签
+    spec:                # 描述Pod的规格
+      containers:        # Pod中的容器，是个列表，name和image是必需的
+      - name: simpleweb  # 容器的名字
+        image: codelieche/simpleweb:v1  # 容器的镜像
+        ports:
+        - containerPort: 80
+          protocol: TCP
