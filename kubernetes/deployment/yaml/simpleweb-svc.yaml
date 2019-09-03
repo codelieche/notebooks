@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  type: ClusterIP  # ClusterIP(默认), NodePort, LoadBalancer
+  selector:
+    app: simpleweb
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80

@@ -2,7 +2,11 @@
 
 
 
-### 目录
+### 基础
+
+- [kubeclt的基本使用](./base/kubectl.md)
+
+
 
 #### 集群相关
 
@@ -11,10 +15,27 @@
 - [安装kubernetes集群准备指---etcd](./cluster/install-etcd.md)
 - [通过kubeadm安装kubernetes集群](./cluster/install-k8s.md)
 
+
+
 ### Pod
 
 - [Pod Hello World](./pod/hello-world.md)
 - [Pod的Status](./pod/status.md)
+- [Pod之--livenessProbe 存活探针](./pod/liveness.md)
+
+
+
+### Deployment
+
+- [Deployment Hello World](./deployment/hello-world.md)
+- [通过Service访问Pod](./deployment/service.md)
+- [控制器之----ReplicaSet](./deployment/replicaset.md)
+
+
+
+### 其它
+
+
 
 #### 问题
 

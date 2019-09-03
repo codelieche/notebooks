@@ -141,7 +141,7 @@
     Normal  Started    9m13s  kubelet, ubuntu239  Started container simpleweb
   ```
 
-  
+![](http://static.codelieche.com/images/kubectl-simpleweb-rs-pod.png)
 
 ### 伸缩scale
 
