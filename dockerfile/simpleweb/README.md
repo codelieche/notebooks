@@ -31,9 +31,9 @@ GOOS=linux GOARCH=amd64 go build -o app ./main.go
 ### 使用镜像
 - 创建三个容器
 ```bash
-docker run -itd --name simpleweb-v1-test -p 9001:80 codelieche/simpleweb:v1
-docker run -itd --name simpleweb-v2-test -p 9002:80 codelieche/simpleweb:v2
-docker run -itd --name simpleweb-v3-test -p 9003:80 codelieche/simpleweb:v3
+docker run -itd --name simpleweb-v1-test -p 9001:8080 codelieche/simpleweb:v1
+docker run -itd --name simpleweb-v2-test -p 9002:8080 codelieche/simpleweb:v2
+docker run -itd --name simpleweb-v3-test -p 9003:8080 codelieche/simpleweb:v3
 ```
 
 或者：
@@ -41,22 +41,23 @@ docker run -itd --name simpleweb-v3-test -p 9003:80 codelieche/simpleweb:v3
 ```bash
 for i in {1..3};
 do
-    docker run -itd  --name simpleweb-v${i}-test -p 900${i}:80 codelieche/simpleweb:v${i}
+    docker run -itd  --name simpleweb-v${i}-test -p 900${i}:8080 codelieche/simpleweb:v${i}
 done
 ```
 
 - 访问首页：
 ```bash
 $ curl http://localhost:9001/ http://localhost:9002 http://localhost:9003
-Host:2abc10f98cf5	IP:172.17.0.5	Version:1
-Host:41205390b8f0	IP:172.17.0.6	Version:2
-Host:97c1d43c13ef	IP:172.17.0.7	Version:3
+Host:e8001d4ac5b3 | IP:172.17.0.5 | Version:1
+Host:eb0d9738b772 | IP:172.17.0.6 | Version:2
+Host:23aaa23b9f6a | IP:172.17.0.7 | Version:3
 ```
 
 - 访问health页
 ```bash
 $ curl http://localhost:9001/health
-Is OK!(3m41.75101s)
+Is OK!(3m41.75101s) | Version:1
+
 ```
 
 - 清除容器
@@ -72,6 +73,7 @@ done
 - `/health`: 健康检查页
     - 传递参数`--duration`（默认：30）: 
     - `GET /health`: 启动多少秒后才返回200的页面，duration秒内返回500的页面
-    - `DELETE /health`: 重置startTime为now, 这样`/health`页在`duration`秒内会返回500的页面
+    - `DELETE /health`: 重置startTime为now, 这样`/health`在`duration`秒内会返回500的页面
 - `/api`: api的url
 - `/headers`: 可以返回当前请求的`Header`信息
+- `/static`: 可以访问`/data`下面的静态文件

@@ -14,5 +14,5 @@ spec:
     name: simpleweb  # 容器的名称
     # 应用监听的端口
     ports:
-    - containerPort: 80  # 端口号
-      protocol: TCP      # 协议
+    - containerPort: 8080  # 端口号
+      protocol: TCP        # 协议

@@ -28,10 +28,10 @@ rm ./app
 docker images | grep $NAME
 
 # 第5步：测试镜像
-docker run -d --name "$NAME-$TAG-test" -p 9000:80 $NAME:$TAG
+docker run -d --name "$NAME-$TAG-test" -v ~/static:/data -p 9000:8080 $NAME:$TAG
 docker images | grep "$NAME-$TAG-test"
 docker ps | grep "$NAME-$TAG-test"
 
 # 第6步：发布镜像
-# docker tag $NAME:$TAG codelieche/$NAME:$TAG
+docker tag $NAME:$TAG codelieche/$NAME:$TAG
 # docker push codelieche/$NAME:$TAG

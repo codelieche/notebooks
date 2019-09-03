@@ -3,9 +3,13 @@ FROM busybox:latest
 
 WORKDIR /app
 
-ENV HOST="0.0.0.0" PORT=80 DURATION=35
+ENV HOST="0.0.0.0" PORT=8080 DURATION=35
+
 EXPOSE $PORT
 
+VOLUME /data/
+
+COPY ./static/ /data/
 COPY ./app /app/app
 
 # 如果FROM其它的系统就从下面的命令启动

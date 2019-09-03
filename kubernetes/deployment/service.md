@@ -40,7 +40,7 @@
         - name: simpleweb
           image: codelieche/simpleweb:v1
           ports:
-          - containerPort: 80
+          - containerPort: 8080
             protocol: TCP
   ```
 
@@ -277,13 +277,13 @@
 
   ```bash
   root@ubuntu238:~# curl 10.114.161.126
-  Host:simpleweb-688b9dc868-7rmb8	IP:172.56.2.72	Version:2
+  Host:simpleweb-688b9dc868-7rmb8 | IP:172.56.2.72 | Version:2
   root@ubuntu238:~# curl 10.114.161.126
-  Host:simpleweb-688b9dc868-rvltw	IP:172.56.1.38	Version:2
+  Host:simpleweb-688b9dc868-rvltw | IP:172.56.1.38 | Version:2
   root@ubuntu238:~# curl 10.114.161.126
-  Host:simpleweb-688b9dc868-zxflc	IP:172.56.1.37	Version:2
+  Host:simpleweb-688b9dc868-zxflc | IP:172.56.1.37 | Version:2
   root@ubuntu238:~# curl 10.114.161.126
-  Host:simpleweb-688b9dc868-rvltw	IP:172.56.1.38	Version:2
+  Host:simpleweb-688b9dc868-rvltw | IP:172.56.1.38 | Version:2
   ```
 
 - 查看Service的详细信息
@@ -299,7 +299,7 @@
   Type:              ClusterIP
   IP:                10.114.161.126
   Port:              <unset>  80/TCP
-  TargetPort:        80/TCP
+  TargetPort:        8080/TCP
   Endpoints:         172.56.1.37:80,172.56.1.38:80,172.56.2.72:80
   Session Affinity:  None
   Events:            <none>

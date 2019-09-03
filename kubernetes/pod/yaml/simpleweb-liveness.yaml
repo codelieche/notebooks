@@ -1,0 +1,20 @@
+apiVersion: v1         # api版本
+kind: Pod              # 资源类型，这里为Pod
+metadata:              # Pod资源的元数据
+  name: simpleweb      # Pod的名字
+  namespace: default   # 命名空间，不填默认是default
+  labels:               # 给这个资源添加点标签
+    app: simpleweb
+spec:                  # Pod的实际说明
+  containers:          # pod中的容器，数组可多个
+  - name: simpleweb    # 容器的名称
+    image: codelieche/simpleweb:v1  # 容器的镜像
+    ports:             # 应用监听的端口号，可多个
+    - containerPort: 8080
+      protocol: TCP
+    livenessProbe:
+      httpGet:                 # HTTP GET存活探针
+        path: /health          # HTTP请求的路径
+        port: 80               # 探针连接的网络端口
+      initialDelaySeconds: 40  # 初始延迟：容器准备时间
+

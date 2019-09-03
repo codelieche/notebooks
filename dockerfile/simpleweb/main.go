@@ -59,14 +59,14 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	content := fmt.Sprintf("Host:%s\tIP:%s\tVersion:%d\n", hostName, strings.Join(ips, ","), version)
+	content := fmt.Sprintf("Host:%s | IP:%s | Version:%d\n", hostName, strings.Join(ips, ","), version)
 	w.Write([]byte(content))
 	return
 }
 
 // api页面处理器
 func handleApi(w http.ResponseWriter, r *http.Request) {
-	content := fmt.Sprintf("Api Page:%s", r.URL.Path)
+	content := fmt.Sprintf("Api Page:%s | Version:%d\n", r.URL, version)
 	w.Write([]byte(content))
 	return
 }
@@ -89,10 +89,10 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 
 	// 默认是30秒才准备好
 	if durationTime <= time.Duration(duration)*time.Second {
-		content := fmt.Sprintf("Not Reading!(%s)", durationTime)
+		content := fmt.Sprintf("Not Reading!(%s) | Version:%d", durationTime, version)
 		http.Error(w, content, 500)
 	} else {
-		content := fmt.Sprintf("Is OK!(%s)", durationTime)
+		content := fmt.Sprintf("Is OK!(%s) | Version:%d\n", durationTime, version)
 		w.Write([]byte(content))
 		return
 	}
@@ -112,8 +112,8 @@ func handleSHowHeaders(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseConfig() (string, int, int) {
-	var host = flag.String("host", "0.0.0.0", "监听的地址")
-	var port = flag.Int("port", 80, "端口号")
+	var host = flag.String("host", "", "监听的地址")
+	var port = flag.Int("port", 8080, "端口号")
 	var duration = flag.Int("duration", 30, "监控检查通过的时间")
 	flag.Parse()
 	return *host, *port, *duration
@@ -156,6 +156,10 @@ func main() {
 	addr := fmt.Sprintf("%s:%d", host, port)
 
 	http.HandleFunc("/", webRoute)
+
+	//	静态文件
+	fs := http.FileServer(http.Dir("/data"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Println(addr, err.Error())

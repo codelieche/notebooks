@@ -25,7 +25,7 @@
         - name: simpleweb  # 容器的名字
           image: codelieche/simpleweb:v1  # 容器的镜像
           ports:
-          - containerPort: 80
+          - containerPort: 8080
             protocol: TCP
   ```
 

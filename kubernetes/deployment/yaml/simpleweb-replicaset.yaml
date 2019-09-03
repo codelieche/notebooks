@@ -1,0 +1,23 @@
+apiVersion: apps/v1beta2  # api版本
+kind: ReplicaSet          # 资源类型，这里是ReplicaSet
+metadata:                 # ReplicaSet的元数据
+  name: simpleweb         # 资源的名称
+  namespace: default      # 命名空间，默认：default
+  labels:                 # 该资源的标签
+    app: simpleweb
+spec:                     # ReplicaSet的具体规格
+  replicas: 2             # 期望的Pod的副本数量
+  selector:               # 选择器
+    matchLabels:          # 匹配标签来选择
+      app: simpleweb
+  template:               # Pod的模板
+    metadata:             # Pod资源的元数据
+      labels:
+        app: simpleweb
+    spec:                 # Pod的具体规格
+      containers:         # Pod中的容器列表
+      - name: simpleweb   # 容器的名称
+        image: codelieche/simpleweb:v1  # 容器的镜像
+        ports:
+        - containerPort: 8080
+

@@ -24,3 +24,4 @@ done
 # 第3步：删除镜像
 docker images | grep "${NAME}:${TAG}"
 docker rmi ${NAME}:${TAG}
+# docker rmi codelieche/$NAME:$TAG

@@ -26,8 +26,8 @@
       name: simpleweb  # 容器的名称
       # 应用监听的端口
       ports:
-      - containerPort: 80  # 端口号
-        protocol: TCP      # 协议
+      - containerPort: 8080  # 端口号
+        protocol: TCP        # 协议
   ```
 
 - 运行pod：`kubectl apply -f hello-world.yaml`
@@ -63,14 +63,14 @@
 - 访问这个pod：
 
   ```bash
-  root@ubuntu238:~# curl http://172.56.1.24
-  Host:simpleweb-v1	IP:172.56.1.24	Version:1
+  root@ubuntu238:~# curl http://172.56.1.24:8080
+  Host:simpleweb-v1 | IP:172.56.1.24 | Version:1
   
-  root@ubuntu238:~# curl http://172.56.1.24/health
-  Is OK!(41m36.77024386s)
+  root@ubuntu238:~# curl http://172.56.1.24:8080/health
+  Is OK!(41m36.77024386s) | Version:1
   
-  root@ubuntu238:~# curl http://172.56.1.24/api
-  Api Page:/api
+  root@ubuntu238:~# curl http://172.56.1.24:8080/api
+  Api Page:/api | Version:1
   ```
 
 - 查看pod的日志：`kubectl logs simpleweb-v1 [-c simpleweb]`
