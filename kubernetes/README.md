@@ -22,6 +22,7 @@
 - [Pod Hello World](./pod/hello-world.md)
 - [Pod的Status](./pod/status.md)
 - [Pod之--livenessProbe 存活探针](./pod/liveness.md)
+- [pod之--readinessProbe就绪探针](./pod/readiness.md)
 
 
 
@@ -30,6 +31,13 @@
 - [Deployment Hello World](./deployment/hello-world.md)
 - [通过Service访问Pod](./deployment/service.md)
 - [控制器之----ReplicaSet](./deployment/replicaset.md)
+
+
+
+### Service
+
+- [Service Hello World](./service/hello-world.md)
+- [Service的类型](./service/types.md)
 
 
 

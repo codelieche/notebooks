@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: simpleweb
+  template:
+    metadata:
+      labels:
+        app: simpleweb
+    spec:
+      containers:
+      - name: simpleweb
+        image: codelieche/simpleweb:v1
+        ports:
+        - containerPort: 8080
+          name: http
+ 

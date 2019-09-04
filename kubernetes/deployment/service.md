@@ -73,11 +73,11 @@
 
   ```bash
   root@ubuntu238:~# curl 172.56.2.71
-  Host:simpleweb-5f448f795c-nw5jh	IP:172.56.2.71	Version:1
+  Host:simpleweb-5f448f795c-nw5jh | IP:172.56.2.71 | Version:1
   root@ubuntu238:~# curl 172.56.1.36
-  Host:simpleweb-5f448f795c-rfx84	IP:172.56.1.36	Version:1
+  Host:simpleweb-5f448f795c-rfx84 | IP:172.56.1.36 | Version:1
   root@ubuntu238:~# curl 172.56.1.35
-  Host:simpleweb-5f448f795c-vx69v	IP:172.56.1.35	Version:1
+  Host:simpleweb-5f448f795c-vx69v | IP:172.56.1.35 | Version:1
   ```
 
   
@@ -92,13 +92,13 @@
 
 - 查看帮助：`kubectl expose --help`
 
-- 执行命令：`kubectl expose deployment simpleweb --port=80 --target-port=80`
+- 执行命令：`kubectl expose deployment simpleweb --port=80 --target-port=8080`
 
   ```bash
   root@ubuntu238:~# kubectl get services
   NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
   kubernetes   ClusterIP   10.112.0.1   <none>        443/TCP   3d17h
-  root@ubuntu238:~# kubectl expose deployment simpleweb --port=80 --target-port=80
+  root@ubuntu238:~# kubectl expose deployment simpleweb --port=80 --target-port=8080
   service/simpleweb exposed
   root@ubuntu238:~# kubectl get services
   NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
@@ -112,23 +112,23 @@
 
   ```bash
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-rfx84	IP:172.56.1.36	Version:1
+  Host:simpleweb-5f448f795c-rfx84 | IP:172.56.1.36 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-rfx84	IP:172.56.1.36	Version:1
+  Host:simpleweb-5f448f795c-rfx84 | IP:172.56.1.36 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-rfx84	IP:172.56.1.36	Version:1
+  Host:simpleweb-5f448f795c-rfx84 | IP:172.56.1.36 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-nw5jh	IP:172.56.2.71	Version:1
+  Host:simpleweb-5f448f795c-nw5jh | IP:172.56.2.71 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-nw5jh	IP:172.56.2.71	Version:1
+  Host:simpleweb-5f448f795c-nw5jh | IP:172.56.2.71 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-vx69v	IP:172.56.1.35	Version:1
+  Host:simpleweb-5f448f795c-vx69v | IP:172.56.1.35 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-rfx84	IP:172.56.1.36	Version:1
+  Host:simpleweb-5f448f795c-rfx84 | IP:172.56.1.36 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-vx69v	IP:172.56.1.35	Version:1
+  Host:simpleweb-5f448f795c-vx69v | IP:172.56.1.35 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-rfx84	IP:172.56.1.36	Version:1
+  Host:simpleweb-5f448f795c-rfx84 | IP:172.56.1.36 | Version:1
   ```
 
   多访问几次，可以发现其响应的后端是不一样的。
@@ -146,17 +146,17 @@
 
   ```bash
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-nw5jh	IP:172.56.2.71	Version:1
+  Host:simpleweb-5f448f795c-nw5jh | IP:172.56.2.71 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-5f448f795c-nw5jh	IP:172.56.2.71	Version:1
+  Host:simpleweb-5f448f795c-nw5jh | IP:172.56.2.71 | Version:1
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-688b9dc868-7rmb8	IP:172.56.2.72	Version:2
+  Host:simpleweb-688b9dc868-7rmb8 | IP:172.56.2.72 | Version:2
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-688b9dc868-rvltw	IP:172.56.1.38	Version:2
+  Host:simpleweb-688b9dc868-rvltw | IP:172.56.1.38 | Version:2
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-688b9dc868-zxflc	IP:172.56.1.37	Version:2
+  Host:simpleweb-688b9dc868-zxflc | IP:172.56.1.37 | Version:2
   root@ubuntu238:~# curl 10.115.86.139
-  Host:simpleweb-688b9dc868-zxflc	IP:172.56.1.37	Version:2
+  Host:simpleweb-688b9dc868-zxflc | IP:172.56.1.37 | Version:2
   root@ubuntu238:~# kubectl get pods
   NAME                         READY   STATUS        RESTARTS   AGE
   simpleweb-5f448f795c-vx69v   0/1     Terminating   0          13m
@@ -185,7 +185,7 @@
     ports:
     - port: 80
       protocol: TCP
-      targetPort: 80
+      targetPort: 8080
     selector:
       app: simpleweb
     sessionAffinity: None
@@ -206,8 +206,8 @@
   Type:              ClusterIP
   IP:                10.115.86.139
   Port:              <unset>  80/TCP
-  TargetPort:        80/TCP
-  Endpoints:         172.56.1.37:80,172.56.1.38:80,172.56.2.72:80
+  TargetPort:        8080/TCP
+  Endpoints:         172.56.1.37:8080,172.56.1.38:8080,172.56.2.72:8080
   Session Affinity:  None
   Events:            <none>
   ```
@@ -252,7 +252,7 @@
     ports:
     - port: 80
       protocol: TCP
-      targetPort: 80
+      targetPort: 8080
   ```
 
 - 创建service：
@@ -300,7 +300,7 @@
   IP:                10.114.161.126
   Port:              <unset>  80/TCP
   TargetPort:        8080/TCP
-  Endpoints:         172.56.1.37:80,172.56.1.38:80,172.56.2.72:80
+  Endpoints:         172.56.1.37:8080,172.56.1.38:8080,172.56.2.72:8080
   Session Affinity:  None
   Events:            <none>
   ```
@@ -316,7 +316,7 @@
   Namespace:         default
   Labels:            app=simpleweb
   # ....
-  Endpoints:         172.56.1.38:80,172.56.2.72:80,172.56.2.73:80
+  Endpoints:         172.56.1.38:8080,172.56.2.72:8080,172.56.2.73:8080
   ```
 
   可以看到`Endpoints`变换了一个。

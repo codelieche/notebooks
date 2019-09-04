@@ -1,7 +1,7 @@
 apiVersion: apps/v1      # 当前配置格式的版本
 kind: Deployment         # 当前要创建的资源类型，这里是Deployment
-metadata:                # 该资源的源数据
-  name: simpleweb        # name是必须的，另外有namespace、label等
+metadata:                # 该资源的元数据
+  name: simpleweb        # name是必须的，另外有namespace、labels等
 spec:                    # 该资源的规格说明
   selector:            
     matchLabels:         # 匹配pod的标签

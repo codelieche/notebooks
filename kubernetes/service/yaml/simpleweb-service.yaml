@@ -1,0 +1,11 @@
+apiVersion: v1         # api版本号
+kind: Service          # 当前要创建的资源类型，这里是Service
+metadata:              # 该资源的元数据
+  name: simpleweb      # name是必须的，另外有namespace、labels等
+spec:
+  selector:            # 选择器
+    app: simpleweb     # 具有app=simpleweb标签的pod都属于该服务
+  ports:
+  - port: 80           # 开放的端口
+    targetPort: 8080   # 服务将连接转发到的容器目标端口
+
