@@ -38,6 +38,7 @@
 
 - [Service Hello World](./service/hello-world.md)
 - [Service的类型](./service/types.md)
+- [通过Ingress暴露服务](./service/ingress.md)
 
 
 
