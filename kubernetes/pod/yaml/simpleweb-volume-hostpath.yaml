@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    volumeMounts:                # 容器的挂载信息
+    - name: data                 # 挂载卷的名字
+      mountPath: /data           # 挂载到容器中的路径
+  volumes:                       # pod级别存储卷的信息
+  - name: data                   # 存储卷的名称
+    hostPath:                    # 采用hostPath
+      path: /data/simpleweb

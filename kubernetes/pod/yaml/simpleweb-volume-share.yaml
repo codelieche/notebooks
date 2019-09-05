@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  containers:
+  - name: simpleweb                 # 容器simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    volumeMounts:                  # simpleweb的挂载信息
+    - name: data
+      mountPath: /data
+  - name: busybox                   # 容器busybox
+    image: busybox:latest
+    volumeMounts:                   # busybox的存储卷挂载信息
+    - name: data
+      mountPath: /var/www           # busybox挂载在/var/www
+    command:                        # 这个容器执行命令
+    - "/bin/sh"
+    args:
+    - "-c"
+    - "sleep 30; for i in `seq 1 100`;do echo `date +'%F %T'`: Hello ${i}.html > /var/www/${i}.html;sleep $i;done; tail -f /dev/null"
+  volumes:         # pod级别的volumns信息
+  - name: data     # data存储卷配置
+    emptyDir: {}

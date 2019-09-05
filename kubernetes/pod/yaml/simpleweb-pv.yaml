@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: simpleweb-pv
+  labels:
+    app: simpleweb
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  hostPath:
+    path: /data/simpleweb-pv
+  # persistentVolumeReclaimPolicy: Retain  # 当申明被释放后，PV会被保留(不清楚和删除)

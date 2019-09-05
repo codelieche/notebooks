@@ -27,7 +27,7 @@
   - [在pod中使用emptyDir](./pod/volume-emptydir.md)
   - [在pod中使用hostPath卷](./pod/volume-hostpath.md)
   - [在pod中两个容器共用一个存储卷](./pod/volume-share.md)
-  - [pv&pvc持久卷和持久卷声明](./pod/volume-pv-pvc.md)
+  - [pv&pvc 持久卷和持久卷声明](./pod/volume-pv-pvc.md)
 
 
 
@@ -48,6 +48,8 @@
 
 
 ### 其它
+
+- [ubuntu16.04中使用NFS](./other/ubuntu-nfs.md)
 
 
 
