@@ -23,6 +23,11 @@
 - [Pod的Status](./pod/status.md)
 - [Pod之--livenessProbe 存活探针](./pod/liveness.md)
 - [pod之--readinessProbe就绪探针](./pod/readiness.md)
+- 存储卷
+  - [在pod中使用emptyDir](./pod/volume-emptydir.md)
+  - [在pod中使用hostPath卷](./pod/volume-hostpath.md)
+  - [在pod中两个容器共用一个存储卷](./pod/volume-share.md)
+  - [pv&pvc持久卷和持久卷声明](./pod/volume-pv-pvc.md)
 
 
 

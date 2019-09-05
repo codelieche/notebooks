@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  rules:
+  - host: simpleweb.codelieche.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: simpleweb
+          servicePort: 80
+
