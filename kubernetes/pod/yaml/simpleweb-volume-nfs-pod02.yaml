@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: simpleweb
+  name: simpleweb-pod02
   labels:
     app: simpleweb
 spec:

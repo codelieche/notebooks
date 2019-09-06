@@ -20,11 +20,16 @@
 
 ### 创建pv
 
+> PV对象是由系统管理人员事先创建在kubernetes集群里面，待用的。
+>
+> 而PVC描述的，则是Pod所系统使用的持久化存储的属性。比如：Volume存储的大小、读写权限等。
+
 - 查看pv的spec：
 
   ```bash
   kubectl explain persistentVolumes.spec
   ```
+
   其常用的字段有：
 
   - `accessModels <[]string>`: 
@@ -151,7 +156,7 @@
     volumes:
     - name: data
       persistentVolumeClaim:
-        claimName: simpleweb-pvc      # 在pod中通过名称引用PVC
+        claimName: simpleweb-pvc      # 在pod中使用PVC的名字
   ```
 
 - 创建pod：

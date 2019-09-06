@@ -133,18 +133,18 @@
   - 在Client端挂载：
 
     ```bash
-    root@ubuntu239:~# mount -t nfs 192.168.6.6.238:/data/nfs/ubuntu239 /data/nfsclient/
-    mount.nfs: access denied by server while mounting 192.168.6.6.238:/data/nfs/ubuntu239
+    root@ubuntu239:~# mount -t nfs 192.168.6.238:/data/nfs/ubuntu239 /data/nfsclient/
+    mount.nfs: access denied by server while mounting 192.168.6.238:/data/nfs/ubuntu239
     # 这里提示没权限，去执行下上一步即可
     
-    root@ubuntu239:~# mount -t nfs 192.168.6.6.238:/data/nfs/ubuntu239 /data/nfsclient/
+    root@ubuntu239:~# mount -t nfs 192.168.6.238:/data/nfs/ubuntu239 /data/nfsclient/
     ```
 
   - 查看挂载信息：
 
     ```bash
     root@ubuntu239:~# mount | grep nfs
-    192.168.6.6.238:/data/nfs/ubuntu239 on /data/nfsclient type nfs4 (rw,relatime,vers=4.0,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,port=0,timeo=600,retrans=2,sec=sys,clientaddr=192.168.6.6.239,local_lock=none,addr=192.168.6.6.238)
+    192.168.6.238:/data/nfs/ubuntu239 on /data/nfsclient type nfs4 (rw,relatime,vers=4.0,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,port=0,timeo=600,retrans=2,sec=sys,clientaddr=192.168.6.239,local_lock=none,addr=192.168.6.238)
     ```
 
 - 再次查看df：
@@ -161,7 +161,7 @@
   /dev/mapper/data--vg-data--lv     40G   48M   38G   1% /data
   /dev/sda1                        472M   58M  390M  13% /boot
   tmpfs                            799M     0  799M   0% /run/user/0
-  192.168.6.6.238:/data/nfs/ubuntu239   40G   48M   38G   1% /data/nfsclient
+  192.168.6.238:/data/nfs/ubuntu239   40G   48M   38G   1% /data/nfsclient
   ```
 
 - 验证文件信息：
@@ -235,7 +235,7 @@
 - 问题1：挂载权限问题，客户端无权限
 
   ```bash
-  root@ubuntu123:~# mount -t nfs 192.168.6.6.238:/data/nfs /data/nfsclient/
+  root@ubuntu123:~# mount -t nfs 192.168.6.238:/data/nfs /data/nfsclient/
   mount.nfs: access denied by server while mounting 192.168.5.123:/data/nfs
   ```
 
@@ -244,8 +244,8 @@
 - 问题2：挂载权限问题，目录无权限
 
   ```bash
-  root@ubuntu239:~# mount -t nfs 192.168.6.6.238:/data/nfs /data/nfsclient/
-  mount.nfs: access denied by server while mounting 192.168.6.6.238:/data/nfs
+  root@ubuntu239:~# mount -t nfs 192.168.6.238:/data/nfs /data/nfsclient/
+  mount.nfs: access denied by server while mounting 192.168.6.238:/data/nfs
   ```
 
   这里IP有权限，这里是目录无权限，去服务器端设置目录的相关权限即可。

@@ -1,0 +1,53 @@
+# 先定义PersistentVolume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: simpleweb-pv
+  labels:
+    app: simpleweb
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  nfs:
+    server: 10.90.1.238
+    path: /data/nfs/simpleweb-pv
+---
+# 定义PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: simpleweb-pvc
+  labels:
+    app: simpleweb
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+  - ReadWriteMany
+  volumeName: simpleweb-pv
+---
+# 定义pod资源
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    volumeMounts:
+    - name: data
+      mountPath: /data
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: simpleweb-pvc     # 在pod中使用PVC的名字
+
