@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: codelieche
+  labels:
+    app: simpleweb
+data:
+  index.html: |
+    This Is ConfigMap index.html
+  test.html: |
+    This Is ConfigMap test.html
