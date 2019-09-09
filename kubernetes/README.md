@@ -43,6 +43,7 @@
 - [ubuntu16.04中使用NFS](./other/ubuntu-nfs.md)
 - [ConfigMap](./other/configmap.md)
 - [Secret](./other/secret.md)
+- [Downward API获取pod的元数据](./other/downward.md)
 
 #### 问题
 

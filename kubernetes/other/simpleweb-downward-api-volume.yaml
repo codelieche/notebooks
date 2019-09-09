@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb-02
+  labels:
+    app: simpleweb-02
+spec:
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    volumeMounts:
+    - name: data
+      mountPath: /data
+  volumes:
+  - name: data
+    downwardAPI:
+      items:
+      - path: "podName"
+        fieldRef:
+          fieldPath: metadata.name
+      - path: "labels"
+        fieldRef:
+          fieldPath: metadata.labels
+      - path: "cpu_request"
+        resourceFieldRef:
+          containerName: simpleweb
+          resource: requests.cpu
+          divisor: 1m
