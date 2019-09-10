@@ -19,18 +19,20 @@
 - [Pod的Status](./pod/status.md)
 - [Pod之--livenessProbe 存活探针](./pod/liveness.md)
 - [pod之--readinessProbe就绪探针](./pod/readiness.md)
+- [pod中使用宿主机namespace](./pod/host-namespace.md)
 - 存储卷
   - [在pod中使用emptyDir](./pod/volume-emptydir.md)
   - [在pod中使用hostPath卷](./pod/volume-hostpath.md)
   - [在pod中两个容器共用一个存储卷](./pod/volume-share.md)
   - [pv&pvc 持久卷和持久卷声明](./pod/volume-pv-pvc.md)
   - [在pod中使用NFS卷](./pod/volume-nfs.md)
+- [pod的网络策略](./pod/network-policy.md)
 
-### Deployment
+### Controllers
 
-- [Deployment Hello World](./deployment/hello-world.md)
-- [通过Service访问Pod](./deployment/service.md)
-- [控制器之----ReplicaSet](./deployment/replicaset.md)
+- [Deployment Hello World](./controllers/deployment.md)
+- [通过Service访问Pod](./controllers/service.md)
+- [控制器之----ReplicaSet](./controllers/replicaset.md)
 
 ### Service
 
@@ -44,6 +46,7 @@
 - [ConfigMap](./other/configmap.md)
 - [Secret](./other/secret.md)
 - [Downward API获取pod的元数据](./other/downward.md)
+- [Service Account](./other/serviceaccount.md)
 
 #### 问题
 

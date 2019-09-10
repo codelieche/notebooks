@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: codelieche
+  labels:
+    project: codelieche
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    project: codelieche
+    app: simpleweb
+spec:
+  serviceAccountName: codelieche    # pod用了自定义的ServiceAccount，不设置会用默认的
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      protocol: TCP
