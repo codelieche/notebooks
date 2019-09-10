@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+  labels:
+    app: test-pod
+spec:
+  containers:
+  - name: alpine
+    image: alpine:latest
+    command:               # 容器启动的时候执行安装curl的命令，然后用tail阻塞容器进程
+    - "/bin/sh"
+    args:
+    - "-c"
+    - "apk add curl && tail -f /dev/null"

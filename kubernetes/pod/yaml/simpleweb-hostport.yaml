@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080 # pod监听的端口是8080，可通过env的PORT修改本镜像监听的端口
+      protocol: TCP
+      hostPort: 9001      # 通过节点的9001端口可以访问这个pod

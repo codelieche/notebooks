@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  hostNetwork: true        # 使用宿主机节点的网络命名空间，默认是false
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      hostPort: 8080       # 它可通过所在节点的8080端口访问pod, 也可不设置,默认就是容器的端口
+      protocol: TCP

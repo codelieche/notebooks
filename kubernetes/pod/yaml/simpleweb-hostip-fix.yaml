@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  hostNetwork: true        # 使用宿主机节点的网络命名空间，默认是false
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    env:
+    - name: PORT
+      value: "9001"          # 设置了这个参数，容器会监听9001的端口

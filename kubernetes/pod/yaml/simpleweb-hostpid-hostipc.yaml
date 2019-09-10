@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  hostPID: true           # pod使用宿主机的PID命名空间
+  hostIPC: true           # pod使用宿主机的IPC命名空间
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      protocol: TCP

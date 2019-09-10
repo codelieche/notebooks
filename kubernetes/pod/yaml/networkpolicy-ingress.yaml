@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: network-ingress
+  namespace: default
+spec:
+  podSelector:           # 空的标签选择器匹配namespace中的所有pod
+    matchLabels:
+      app: simpleweb
+  ingress:
+  - from:
+    - podSelector:       # 允许来自具有network=allow标签的pod的访问
+        matchLabels:
+          network: allow
+    - ipBlock:                  # 设置IP黑名单
+        cidr: 192.168.6.0/24    # 设置某段的IP
+        except:
+        - "192.168.6.240/24"    # 设置某个具体的IP排除在外

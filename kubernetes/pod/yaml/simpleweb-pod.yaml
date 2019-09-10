@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      protocol: TCP
