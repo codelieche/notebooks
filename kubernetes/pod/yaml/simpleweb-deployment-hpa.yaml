@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: simpleweb-hpa
+  labels:
+    app: simpleweb
+spec:
+  maxReplicas: 5            # 指定最大的副本数
+  metrics:
+  - resource:
+      name: cpu             # 当pod请求CPU的50%时，Autoscaler调整pod的数量
+      target:
+        type: Utilization
+        averageUtilization: 50
+    type: Resource
+  minReplicas: 1            # 指定最小的副本数
+  scaleTargetRef:           # 该HPA将作用于的目标资源
+    apiVersion: apps/v1
+    kind: Deployment
+    name: simpleweb         # Autoscaler作用于Deployment/simpleweb

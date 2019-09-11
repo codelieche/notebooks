@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  replicas: 1           # 初始pod的数量是1
+  selector:
+    matchLabels:
+      app: simpleweb
+  template:
+    metadata:
+      labels:
+        app: simpleweb
+    spec:
+      containers:
+      - name: simpleweb
+        image: codelieche/simpleweb:v1
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 200m      # 每个容器请求200毫核的CPU：1/5个CPU
+          limits:
+            cpu: 500m      # 容器CPU最多使用0.5核CPU

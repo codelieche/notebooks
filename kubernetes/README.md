@@ -12,6 +12,7 @@
 - [安装kubernetes集群之--配置虚IP](./cluster/keepalived.md)
 - [安装kubernetes集群准备指---etcd](./cluster/install-etcd.md)
 - [通过kubeadm安装kubernetes集群](./cluster/install-k8s.md)
+- [安装metrics server](./cluster/install-metrics-server.md)
 
 ### Pod
 
@@ -27,6 +28,7 @@
   - [在pod中两个容器共用一个存储卷](./pod/volume-share.md)
   - [pv&pvc 持久卷和持久卷声明](./pod/volume-pv-pvc.md)
   - [在pod中使用NFS卷](./pod/volume-nfs.md)
+- [pod自动伸缩](./pod/auto-scale.md)
 - [pod的网络策略](./pod/network-policy.md)
 
 ### Controllers
