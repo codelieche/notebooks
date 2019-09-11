@@ -24,7 +24,7 @@ var startTime = time.Now() // 系统启动的时间
 var host string            // web监听的地址
 var port int               // web启动的端口号
 var duration int           // 监控检查通过的时间
-var version int = 1        // 本程序的版本v1
+var version int = 1        // 本程序的版本v1  改成用程序控制
 //var version int = 2        // 本程序的版本v2
 //var version int = 3        // 本程序的版本v3
 
@@ -111,16 +111,17 @@ func handleSHowHeaders(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func parseConfig() (string, int, int) {
+func parseConfig() (string, int, int, int) {
 	var host = flag.String("host", "", "监听的地址")
 	var port = flag.Int("port", 8080, "端口号")
 	var duration = flag.Int("duration", 30, "监控检查通过的时间")
+	var version = flag.Int("version", 1, "程序版本")
 	flag.Parse()
-	return *host, *port, *duration
+	return *host, *port, *duration, *version
 }
 
 func init() {
-	host, port, duration = parseConfig()
+	host, port, duration, version = parseConfig()
 
 }
 

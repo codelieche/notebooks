@@ -20,6 +20,7 @@
 - [Pod之--livenessProbe 存活探针](./pod/liveness.md)
 - [pod之--readinessProbe就绪探针](./pod/readiness.md)
 - [pod中使用宿主机namespace](./pod/host-namespace.md)
+- [pod中容器资源的限制](./pod/requests-limits.md)
 - 存储卷
   - [在pod中使用emptyDir](./pod/volume-emptydir.md)
   - [在pod中使用hostPath卷](./pod/volume-hostpath.md)

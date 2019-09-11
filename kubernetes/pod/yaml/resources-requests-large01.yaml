@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb-large
+  labels:
+    app: simpleweb-large
+spec:
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    resources:            # 对资源进行限制
+      requests:           # 容器启动至少需要的资源
+        cpu: 32           # 容器需申请32核
+        memory: 128Gi     # 容器申请内存128Gi内存
