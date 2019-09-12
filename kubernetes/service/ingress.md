@@ -323,3 +323,53 @@
   root@ubuntu238:~# kubectl delete ingresses simpleweb
   ingress.extensions "simpleweb" deleted
   ```
+
+
+
+### 遇到的问题
+
+- `不监听节点的80端口`临时解决方案
+
+  > 先抓紧临时解决方式，iptalbes映射到集群Service的ClusterIP。
+
+  - 查看Service：
+
+    ```bash
+    root@ubuntu238:~# kubectl get services -n kube-system
+    NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+    traefik-ingress-service   ClusterIP   10.120.52.143    <none>        80/TCP,8080/TCP          19m
+    traefik-web-ui            ClusterIP   10.113.11.104    <none>        80/TCP                   19m
+    ```
+
+  - 查看`traefik-ingress-service`的后端
+
+    ```bash
+    root@ubuntu238:~# kubectl get endpoints -n kube-system traefik-ingress-service
+    NAME                      ENDPOINTS                                                 AGE
+    traefik-ingress-service   172.56.0.4:80,172.56.1.59:80,172.56.2.22:80 + 3 more...   20m
+    ```
+
+  - 测试Service是否通：
+
+    ```bash
+    root@ubuntu238:~# curl 10.120.52.143
+    404 page not found
+    root@ubuntu238:~# curl 172.56.0.4
+    404 page not found
+    ```
+
+    显示404就表示traefik-ingress-service工作是ok的。
+
+  - 添加iptables规则：
+
+    ```bash
+    iptables -A PREROUTING -t nat -i ens192 -p tcp --dport 80 -j DNAT --to 10.120.52.143:80
+    ```
+
+  - 删除iptables规则：
+
+    ```bash
+    iptables -D PREROUTING -t nat -i ens192 -p tcp --dport 80 -j DNAT --to 10.120.52.143:80
+    ```
+
+    

@@ -106,10 +106,9 @@
   # ......
   containers:
   - name: metrics-server
-    image: k8s.gcr.io/metrics-server-amd64:v0.3.4
+    image: k8s.gcr.io/metrics-server-amd64:v0.3.1
     imagePullPolicy: Always
     args:
-    - "--kubelet-insecure-tls"
     - --kubelet-insecure-tls
     # - kubelet-preferred-address-types=InternalIP
     - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname
@@ -118,23 +117,23 @@
     - name: tmp-dir
       mountPath: /tmp
   ```
-
-  再次应用：
-
-  ```bash
+  
+再次应用：
+  
+```bash
   # kubectl apply -f metrics-server-deployment.yaml
   serviceaccount/metrics-server unchanged
   deployment.apps/metrics-server configured
   ```
-
-  **记得要等个1-2分钟哦！**再次执行`kubectl top pods`
-
-  ```bash
+  
+**记得要等个1-2分钟哦！**再次执行`kubectl top pods`
+  
+```bash
   root@ubuntu238:~# kubectl top pods
   NAME                         CPU(cores)   MEMORY(bytes)
   simpleweb-75b48b4d6c-vwzzv   0m           5Mi
   ```
-
+  
 - 查看node资源：`kubectl top nodes`
 
   ```bash

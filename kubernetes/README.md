@@ -12,7 +12,6 @@
 - [安装kubernetes集群之--配置虚IP](./cluster/keepalived.md)
 - [安装kubernetes集群准备指---etcd](./cluster/install-etcd.md)
 - [通过kubeadm安装kubernetes集群](./cluster/install-k8s.md)
-- [安装metrics server](./cluster/install-metrics-server.md)
 
 ### Pod
 
@@ -30,6 +29,7 @@
   - [在pod中使用NFS卷](./pod/volume-nfs.md)
 - [pod自动伸缩](./pod/auto-scale.md)
 - [pod的网络策略](./pod/network-policy.md)
+- [pod的调度](./pod/schedule.md)
 
 ### Controllers
 
@@ -50,6 +50,10 @@
 - [Secret](./other/secret.md)
 - [Downward API获取pod的元数据](./other/downward.md)
 - [Service Account](./other/serviceaccount.md)
+
+### 监控
+
+- [安装metrics server](./monitor/install-metrics-server.md)
 
 #### 问题
 

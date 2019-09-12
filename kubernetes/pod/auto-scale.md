@@ -138,7 +138,7 @@ kubernetes可以监控pod资源，并检查度量指标（CPU使用率或者其�
   这个是因为集群未部署cAdvisor。获取不到监控数据(/metrics)。
 
 - 需要安装下metrics-server：
-  - [安装metrics-server](../cluster/install-metrics-server.md)
+  - [安装metrics-server](../monitor/install-metrics-server.md)
 
     - 参考文档：
 
