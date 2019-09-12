@@ -151,8 +151,8 @@
 
      ```bash
      root@ubuntu123:~# ping simpleweb.codelieche.com
-     PING simpleweb.codelieche.com (10.90.1.239) 56(84) bytes of data.
-     64 bytes from simpleweb.codelieche.com (10.90.1.239): icmp_seq=1 ttl=64 time=0.650 ms
+     PING simpleweb.codelieche.com (192.168.6.239) 56(84) bytes of data.
+     64 bytes from simpleweb.codelieche.com (192.168.6.239): icmp_seq=1 ttl=64 time=0.650 ms
      ```
 
      如果出现下面问题，也许是没有Ingress Crontroller运行在kubernetes集群中。
@@ -328,7 +328,13 @@
 
 ### 遇到的问题
 
-- `不监听节点的80端口`临时解决方案
+#### 问题1：不监听节点的80端口
+
+> netstat -an | grep LISTEN | grep 80
+>
+> 未看到监听80端口。
+
+- 方式一：iptables临时处理
 
   > 先抓紧临时解决方式，iptalbes映射到集群Service的ClusterIP。
 
@@ -370,6 +376,72 @@
 
     ```bash
     iptables -D PREROUTING -t nat -i ens192 -p tcp --dport 80 -j DNAT --to 10.120.52.143:80
+    ```
+
+- 改用ingress-nginx
+
+  > https://github.com/kubernetes/ingress-nginx
+  >
+  > https://kubernetes.github.io/ingress-nginx/deploy/
+
+  - 下载yaml文件：
+
+    ```bash
+    wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+    ```
+
+    - 调整：把`nginx-ingress-controller`的`Deployment`改为`DaemonSet`
+      - 注释掉`spec.replicas`
+      - 另外端口设置`pods.spec.hostPort:true`， 80 和 443端口
+
+  - 部署ingress-nginx相关资源：
+
+    ```bash
+    # kubectl apply -f mandatory.yaml
+    namespace/ingress-nginx created
+    configmap/nginx-configuration created
+    configmap/tcp-services created
+    configmap/udp-services created
+    serviceaccount/nginx-ingress-serviceaccount created
+    clusterrole.rbac.authorization.k8s.io/nginx-ingress-clusterrole created
+    role.rbac.authorization.k8s.io/nginx-ingress-role created
+    rolebinding.rbac.authorization.k8s.io/nginx-ingress-role-nisa-binding created
+    clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress-clusterrole-nisa-binding created
+    daemonset.apps/nginx-ingress-controller created
+    ```
+
+  - 查看pods：
+
+    ```bash
+    root@ubuntu238:~# kubectl get pods -n ingress-nginx
+    NAME                             READY   STATUS    RESTARTS   AGE
+    nginx-ingress-controller-djprq   1/1     Running   0          3m51s
+    nginx-ingress-controller-fk2k4   1/1     Running   0          3m51s
+    nginx-ingress-controller-lznxq   1/1     Running   0          3m51s
+    ```
+
+  - 查看节点的端口映射：
+
+    ```bash
+    root@ubuntu238:~# netstat -an | grep LISTEN | grep "80\|443"
+    tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN
+    tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN
+    tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN
+    tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN
+    tcp        0      0 192.168.6.238:2380        0.0.0.0:*               LISTEN
+    tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN
+    tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN
+    tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN
+    tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN
+    tcp6       0      0 :::443                  :::*                    LISTEN
+    tcp6       0      0 :::443                  :::*                    LISTEN
+    tcp6       0      0 :::443                  :::*                    LISTEN
+    tcp6       0      0 :::443                  :::*                    LISTEN
+    tcp6       0      0 :::6443                 :::*                    LISTEN
+    tcp6       0      0 :::80                   :::*                    LISTEN
+    tcp6       0      0 :::80                   :::*                    LISTEN
+    tcp6       0      0 :::80                   :::*                    LISTEN
+    tcp6       0      0 :::80                   :::*                    LISTEN
     ```
 
     
