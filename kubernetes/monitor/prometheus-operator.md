@@ -90,7 +90,334 @@
   service "prometheus-operator" deleted
   ```
 
+
+
+
+### 通过helm安装prometheus-operator
+
+- 下载chart：
+
+  ```bash
   
+  root@ubuntu238:~/helm/yaml# helm search prometheus-operator
+  NAME                            CHART VERSION   APP VERSION     DESCRIPTION
+  stable/prometheus-operator      6.11.0          0.32.0          Provides easy monitoring definitions for Kubernetes servi...
+  root@ubuntu238:~/helm/yaml# helm fetch stable/prometheus-operator
+  root@ubuntu238:~/helm/yaml# ls
+  prometheus-operator-6.11.0.tgz  rbac-config.yaml
+  ```
+
+- 解压然后执行安装：
+
+  ```bash
+  tar -zxvf prometheus-operator-6.11.0.tgz
+  cd prometheus-operator
+  helm install --name prometheus-operator ./
+  ```
+
+- 安装输出信息：
+
+  ```
+  root@ubuntu238:~/helm/yaml/prometheus-operator# helm install --name prometheus-operator ./
+  NAME:   prometheus-operator
+  LAST DEPLOYED: Thu Sep 12 13:36:43 2019
+  NAMESPACE: default
+  STATUS: DEPLOYED
+  
+  RESOURCES:
+  ==> v1/Alertmanager
+  NAME                              AGE
+  prometheus-operator-alertmanager  57s
+  
+  ==> v1/ClusterRole
+  NAME                                        AGE
+  prometheus-operator-alertmanager            57s
+  prometheus-operator-grafana-clusterrole     57s
+  prometheus-operator-operator                57s
+  prometheus-operator-operator-psp            57s
+  prometheus-operator-prometheus              57s
+  prometheus-operator-prometheus-psp          57s
+  psp-prometheus-operator-kube-state-metrics  57s
+  
+  ==> v1/ClusterRoleBinding
+  NAME                                            AGE
+  prometheus-operator-alertmanager                57s
+  prometheus-operator-grafana-clusterrolebinding  57s
+  prometheus-operator-operator                    57s
+  prometheus-operator-operator-psp                57s
+  prometheus-operator-prometheus                  57s
+  prometheus-operator-prometheus-psp              57s
+  psp-prometheus-operator-kube-state-metrics      57s
+  
+  ==> v1/ConfigMap
+  NAME                                                   DATA  AGE
+  prometheus-operator-apiserver                          1     57s
+  prometheus-operator-controller-manager                 1     57s
+  prometheus-operator-etcd                               1     57s
+  prometheus-operator-grafana                            1     57s
+  prometheus-operator-grafana-config-dashboards          1     57s
+  prometheus-operator-grafana-datasource                 1     57s
+  prometheus-operator-grafana-test                       1     57s
+  prometheus-operator-k8s-coredns                        1     57s
+  prometheus-operator-k8s-resources-cluster              1     57s
+  prometheus-operator-k8s-resources-namespace            1     57s
+  prometheus-operator-k8s-resources-pod                  1     57s
+  prometheus-operator-k8s-resources-workload             1     57s
+  prometheus-operator-k8s-resources-workloads-namespace  1     57s
+  prometheus-operator-kubelet                            1     57s
+  prometheus-operator-node-cluster-rsrc-use              1     57s
+  prometheus-operator-node-rsrc-use                      1     57s
+  prometheus-operator-nodes                              1     57s
+  prometheus-operator-persistentvolumesusage             1     57s
+  prometheus-operator-pods                               1     57s
+  prometheus-operator-prometheus                         1     57s
+  prometheus-operator-prometheus-remote-write            1     57s
+  prometheus-operator-proxy                              1     57s
+  prometheus-operator-scheduler                          1     57s
+  prometheus-operator-statefulset                        1     57s
+  
+  ==> v1/Deployment
+  NAME                                    READY  UP-TO-DATE  AVAILABLE  AGE
+  prometheus-operator-kube-state-metrics  1/1    1           1          57s
+  prometheus-operator-operator            1/1    1           1          57s
+  
+  ==> v1/Pod(related)
+  NAME                                                    READY  STATUS   RESTARTS  AGE
+  prometheus-operator-grafana-6b6fb48c76-ndz5w            1/2    Running  0         57s
+  prometheus-operator-kube-state-metrics-c5f866dcd-5x4db  1/1    Running  0         57s
+  prometheus-operator-operator-767bb6d4bd-nxdxs           2/2    Running  0         57s
+  prometheus-operator-prometheus-node-exporter-4q5zz      1/1    Running  0         57s
+  prometheus-operator-prometheus-node-exporter-rf74d      1/1    Running  0         57s
+  prometheus-operator-prometheus-node-exporter-sthc2      1/1    Running  0         57s
+  
+  ==> v1/Prometheus
+  NAME                            AGE
+  prometheus-operator-prometheus  57s
+  
+  ==> v1/PrometheusRule
+  NAME                                                      AGE
+  prometheus-operator-alertmanager.rules                    56s
+  prometheus-operator-etcd                                  55s
+  prometheus-operator-general.rules                         54s
+  prometheus-operator-k8s.rules                             53s
+  prometheus-operator-kube-apiserver.rules                  52s
+  prometheus-operator-kube-prometheus-node-recording.rules  51s
+  prometheus-operator-kube-scheduler.rules                  50s
+  prometheus-operator-kubernetes-absent                     48s
+  prometheus-operator-kubernetes-apps                       47s
+  prometheus-operator-kubernetes-resources                  46s
+  prometheus-operator-kubernetes-storage                    45s
+  prometheus-operator-kubernetes-system                     44s
+  prometheus-operator-node-exporter                         42s
+  prometheus-operator-node-exporter.rules                   43s
+  prometheus-operator-node-network                          41s
+  prometheus-operator-node-time                             40s
+  prometheus-operator-node.rules                            40s
+  prometheus-operator-prometheus                            40s
+  prometheus-operator-prometheus-operator                   40s
+  
+  ==> v1/Role
+  NAME                              AGE
+  prometheus-operator-grafana-test  57s
+  
+  ==> v1/RoleBinding
+  NAME                              AGE
+  prometheus-operator-grafana-test  57s
+  
+  ==> v1/Secret
+  NAME                                           TYPE    DATA  AGE
+  alertmanager-prometheus-operator-alertmanager  Opaque  1     57s
+  prometheus-operator-grafana                    Opaque  3     57s
+  
+  ==> v1/Service
+  NAME                                          TYPE       CLUSTER-IP      EXTERNAL-IP  PORT(S)           AGE
+  prometheus-operator-alertmanager              ClusterIP  10.120.5.150    <none>       9093/TCP          57s
+  prometheus-operator-coredns                   ClusterIP  None            <none>       9153/TCP          57s
+  prometheus-operator-grafana                   ClusterIP  10.127.38.94    <none>       80/TCP            57s
+  prometheus-operator-kube-controller-manager   ClusterIP  None            <none>       10252/TCP         57s
+  prometheus-operator-kube-etcd                 ClusterIP  None            <none>       2379/TCP          57s
+  prometheus-operator-kube-proxy                ClusterIP  None            <none>       10249/TCP         57s
+  prometheus-operator-kube-scheduler            ClusterIP  None            <none>       10251/TCP         57s
+  prometheus-operator-kube-state-metrics        ClusterIP  10.125.233.77   <none>       8080/TCP          57s
+  prometheus-operator-operator                  ClusterIP  10.121.109.117  <none>       8080/TCP,443/TCP  57s
+  prometheus-operator-prometheus                ClusterIP  10.114.132.113  <none>       9090/TCP          57s
+  prometheus-operator-prometheus-node-exporter  ClusterIP  10.117.126.70   <none>       9100/TCP          57s
+  
+  ==> v1/ServiceAccount
+  NAME                                          SECRETS  AGE
+  prometheus-operator-alertmanager              1        57s
+  prometheus-operator-grafana                   1        57s
+  prometheus-operator-grafana-test              1        57s
+  prometheus-operator-kube-state-metrics        1        57s
+  prometheus-operator-operator                  1        57s
+  prometheus-operator-prometheus                1        57s
+  prometheus-operator-prometheus-node-exporter  1        57s
+  
+  ==> v1/ServiceMonitor
+  NAME                                         AGE
+  prometheus-operator-alertmanager             40s
+  prometheus-operator-apiserver                40s
+  prometheus-operator-coredns                  40s
+  prometheus-operator-grafana                  40s
+  prometheus-operator-kube-controller-manager  40s
+  prometheus-operator-kube-etcd                40s
+  prometheus-operator-kube-proxy               40s
+  prometheus-operator-kube-scheduler           40s
+  prometheus-operator-kube-state-metrics       40s
+  prometheus-operator-kubelet                  40s
+  prometheus-operator-node-exporter            40s
+  prometheus-operator-operator                 40s
+  prometheus-operator-prometheus               40s
+  
+  ==> v1beta1/ClusterRole
+  NAME                                              AGE
+  prometheus-operator-kube-state-metrics            57s
+  psp-prometheus-operator-prometheus-node-exporter  57s
+  
+  ==> v1beta1/ClusterRoleBinding
+  NAME                                              AGE
+  prometheus-operator-kube-state-metrics            57s
+  psp-prometheus-operator-prometheus-node-exporter  57s
+  
+  ==> v1beta1/DaemonSet
+  NAME                                          DESIRED  CURRENT  READY  UP-TO-DATE  AVAILABLE  NODE SELECTOR  AGE
+  prometheus-operator-prometheus-node-exporter  3        3        3      3           3          <none>         57s
+  
+  ==> v1beta1/MutatingWebhookConfiguration
+  NAME                           AGE
+  prometheus-operator-admission  57s
+  
+  ==> v1beta1/PodSecurityPolicy
+  NAME                                          PRIV   CAPS      SELINUX           RUNASUSER  FSGROUP    SUPGROUP  READONLYROOTFS  VOLUMES
+  prometheus-operator-alertmanager              false  RunAsAny  RunAsAny          MustRunAs  MustRunAs  false     configMap,emptyDir,projected,secret,downwardAPI,persistentVolumeClaim
+  prometheus-operator-grafana                   false  RunAsAny  RunAsAny          RunAsAny   RunAsAny   false     configMap,emptyDir,projected,secret,downwardAPI,persistentVolumeClaim
+  prometheus-operator-grafana-test              false  RunAsAny  RunAsAny          RunAsAny   RunAsAny   false     configMap,downwardAPI,emptyDir,projected,secret
+  prometheus-operator-kube-state-metrics        false  RunAsAny  MustRunAsNonRoot  MustRunAs  MustRunAs  false     secret
+  prometheus-operator-operator                  false  RunAsAny  RunAsAny          MustRunAs  MustRunAs  false     configMap,emptyDir,projected,secret,downwardAPI,persistentVolumeClaim
+  prometheus-operator-prometheus                false  RunAsAny  RunAsAny          MustRunAs  MustRunAs  false     configMap,emptyDir,projected,secret,downwardAPI,persistentVolumeClaim
+  prometheus-operator-prometheus-node-exporter  false  RunAsAny  RunAsAny          MustRunAs  MustRunAs  false     configMap,emptyDir,projected,secret,downwardAPI,persistentVolumeClaim,hostPath
+  
+  ==> v1beta1/Role
+  NAME                         AGE
+  prometheus-operator-grafana  57s
+  
+  ==> v1beta1/RoleBinding
+  NAME                         AGE
+  prometheus-operator-grafana  57s
+  
+  ==> v1beta1/ValidatingWebhookConfiguration
+  NAME                           AGE
+  prometheus-operator-admission  40s
+  
+  ==> v1beta2/Deployment
+  NAME                         READY  UP-TO-DATE  AVAILABLE  AGE
+  prometheus-operator-grafana  0/1    1           0          57s
+  
+  
+  NOTES:
+  The Prometheus Operator has been installed. Check its status by running:
+    kubectl --namespace default get pods -l "release=prometheus-operator"
+  
+  Visit https://github.com/coreos/prometheus-operator for instructions on how
+  to create & configure Alertmanager and Prometheus instances using the Operator.
+  root@ubuntu238:~/helm/yaml/prometheus-operator#
+  ```
+
+- 查看pod：
+
+  ```bash
+  root@ubuntu239:~# kubectl get pods --all-namespaces | grep prometheus
+  default         alertmanager-prometheus-operator-alertmanager-0          2/2     Running   0          4m9s
+  default         prometheus-operator-grafana-6b6fb48c76-ndz5w             2/2     Running   0          4m14s
+  default         prometheus-operator-kube-state-metrics-c5f866dcd-5x4db   1/1     Running   0          4m14s
+  default         prometheus-operator-operator-767bb6d4bd-nxdxs            2/2     Running   0          4m14s
+  default         prometheus-operator-prometheus-node-exporter-4q5zz       1/1     Running   0          4m14s
+  default         prometheus-operator-prometheus-node-exporter-rf74d       1/1     Running   0          4m14s
+  default         prometheus-operator-prometheus-node-exporter-sthc2       1/1     Running   0          4m14s
+  default         prometheus-prometheus-operator-prometheus-0              3/3     Running   1          3m59s
+  ```
+
+- 查看crd：
+
+  ```bash
+  root@ubuntu239:~# kubectl get prometheus
+  NAME                             AGE
+  prometheus-operator-prometheus   12m
+  
+  
+  root@ubuntu239:~# kubectl get alertmanagers
+  NAME                               AGE
+  prometheus-operator-alertmanager   12m
+  
+  root@ubuntu239:~# kubectl get servicemonitors
+  NAME                                          AGE
+  prometheus-operator-alertmanager              11m
+  prometheus-operator-apiserver                 11m
+  prometheus-operator-coredns                   11m
+  prometheus-operator-grafana                   11m
+  prometheus-operator-kube-controller-manager   11m
+  prometheus-operator-kube-etcd                 11m
+  prometheus-operator-kube-proxy                11m
+  prometheus-operator-kube-scheduler            11m
+  prometheus-operator-kube-state-metrics        11m
+  prometheus-operator-kubelet                   11m
+  prometheus-operator-node-exporter             11m
+  prometheus-operator-operator                  11m
+  prometheus-operator-prometheus                11m
+  
+  root@ubuntu239:~# kubectl get prometheusrules
+  NAME                                                       AGE
+  prometheus-operator-alertmanager.rules                     12m
+  prometheus-operator-etcd                                   12m
+  prometheus-operator-general.rules                          12m
+  prometheus-operator-k8s.rules                              12m
+  prometheus-operator-kube-apiserver.rules                   12m
+  prometheus-operator-kube-prometheus-node-recording.rules   12m
+  prometheus-operator-kube-scheduler.rules                   12m
+  prometheus-operator-kubernetes-absent                      12m
+  prometheus-operator-kubernetes-apps                        12m
+  prometheus-operator-kubernetes-resources                   12m
+  prometheus-operator-kubernetes-storage                     12m
+  prometheus-operator-kubernetes-system                      12m
+  prometheus-operator-node-exporter                          12m
+  prometheus-operator-node-exporter.rules                    12m
+  prometheus-operator-node-network                           12m
+  prometheus-operator-node-time                              12m
+  prometheus-operator-node.rules                             12m
+  prometheus-operator-prometheus                             12m
+  prometheus-operator-prometheus-operator                    12m
+  ```
+
+#### 添加Ingress
+
+- `prometheus-ingress.yaml`
+
+  ```yaml
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: prometheus-ingress
+    namespace: default
+    labels:
+      prometheus: k8s
+  spec:
+    rules:
+    - host: prometheus.codelieche.com
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName:  prometheus-operator-prometheus
+            servicePort: 9090
+  
+  ```
+
+- 创建Ingress资源：
+
+  ```bash
+  # kubectl apply -f prometheus-ingress.yaml
+  ingress.extensions/prometheus-ingress created
+  ```
 
 ### 安装kube-prometheus
 
@@ -243,6 +570,27 @@
             servicePort: 9090
   ```
   
+- 查看pods：
+
+  ```bash
+  root@ubuntu238:~# kubectl get pods -n monitoring
+  NAME                                   READY   STATUS    RESTARTS   AGE
+  alertmanager-main-0                    2/2     Running   0          2m19s
+  alertmanager-main-1                    2/2     Running   0          2m21s
+  alertmanager-main-2                    2/2     Running   8          21m
+  grafana-57bfdd47f8-nncnd               1/1     Running   0          46m
+  kube-state-metrics-65d5b4b99d-98hx4    4/4     Running   0          21m
+  node-exporter-hwd7t                    2/2     Running   0          46m
+  node-exporter-lzqjt                    2/2     Running   0          46m
+  node-exporter-q9c4j                    2/2     Running   0          46m
+  prometheus-adapter-668748ddbd-qcdjg    1/1     Running   0          46m
+  prometheus-k8s-0                       3/3     Running   1          2m19s
+  prometheus-k8s-1                       3/3     Running   0          46m
+  prometheus-operator-5b6cfc5846-d2pjz   1/1     Running   0          2m27s
+  ```
+
+  
+
 - 访问网站
 
   ![image-20190912215125567](image/image-20190912215125567.png)
