@@ -335,89 +335,10 @@
   default         prometheus-operator-prometheus-node-exporter-rf74d       1/1     Running   0          4m14s
   default         prometheus-operator-prometheus-node-exporter-sthc2       1/1     Running   0          4m14s
   default         prometheus-prometheus-operator-prometheus-0              3/3     Running   1          3m59s
-  ```
-
-- 查看crd：
-
-  ```bash
-  root@ubuntu239:~# kubectl get prometheus
-  NAME                             AGE
-  prometheus-operator-prometheus   12m
-  
-  
-  root@ubuntu239:~# kubectl get alertmanagers
-  NAME                               AGE
-  prometheus-operator-alertmanager   12m
-  
-  root@ubuntu239:~# kubectl get servicemonitors
-  NAME                                          AGE
-  prometheus-operator-alertmanager              11m
-  prometheus-operator-apiserver                 11m
-  prometheus-operator-coredns                   11m
-  prometheus-operator-grafana                   11m
-  prometheus-operator-kube-controller-manager   11m
-  prometheus-operator-kube-etcd                 11m
-  prometheus-operator-kube-proxy                11m
-  prometheus-operator-kube-scheduler            11m
-  prometheus-operator-kube-state-metrics        11m
-  prometheus-operator-kubelet                   11m
-  prometheus-operator-node-exporter             11m
-  prometheus-operator-operator                  11m
-  prometheus-operator-prometheus                11m
-  
-  root@ubuntu239:~# kubectl get prometheusrules
-  NAME                                                       AGE
-  prometheus-operator-alertmanager.rules                     12m
-  prometheus-operator-etcd                                   12m
-  prometheus-operator-general.rules                          12m
-  prometheus-operator-k8s.rules                              12m
-  prometheus-operator-kube-apiserver.rules                   12m
-  prometheus-operator-kube-prometheus-node-recording.rules   12m
-  prometheus-operator-kube-scheduler.rules                   12m
-  prometheus-operator-kubernetes-absent                      12m
-  prometheus-operator-kubernetes-apps                        12m
-  prometheus-operator-kubernetes-resources                   12m
-  prometheus-operator-kubernetes-storage                     12m
-  prometheus-operator-kubernetes-system                      12m
-  prometheus-operator-node-exporter                          12m
-  prometheus-operator-node-exporter.rules                    12m
-  prometheus-operator-node-network                           12m
-  prometheus-operator-node-time                              12m
-  prometheus-operator-node.rules                             12m
-  prometheus-operator-prometheus                             12m
-  prometheus-operator-prometheus-operator                    12m
-  ```
-
-#### 添加Ingress
-
-- `prometheus-ingress.yaml`
-
-  ```yaml
-  apiVersion: extensions/v1beta1
-  kind: Ingress
-  metadata:
-    name: prometheus-ingress
-    namespace: default
-    labels:
-      prometheus: k8s
-  spec:
-    rules:
-    - host: prometheus.codelieche.com
-      http:
-        paths:
-        - path: /
-          backend:
-            serviceName:  prometheus-operator-prometheus
-            servicePort: 9090
   
   ```
 
-- 创建Ingress资源：
-
-  ```bash
-  # kubectl apply -f prometheus-ingress.yaml
-  ingress.extensions/prometheus-ingress created
-  ```
+  
 
 ### 安装kube-prometheus
 
