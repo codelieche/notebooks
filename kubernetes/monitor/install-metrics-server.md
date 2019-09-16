@@ -15,17 +15,19 @@
 
 - 下载yaml
 
+  > https://github.com/kubernetes-incubator/metrics-server
+  
   ```bash
   for i in aggregated-metrics-reader.yaml auth-delegator.yaml auth-reader.yaml metrics-apiservice.yaml metrics-server-deployment.yaml metrics-server-service.yaml resource-reader.yaml
   do
      wget "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8+/${i}"
   done
   
-  tree
+tree
   ```
 
   查看下载的文件：
-
+  
   ```bash
   ➜  metrics-server git $ tree
   .
@@ -35,17 +37,17 @@
   ├── metrics-apiservice.yaml
   ├── metrics-server-deployment.yaml
   ├── metrics-server-service.yaml
-  └── resource-reader.yaml
+└── resource-reader.yaml
   ```
-
   
+  用这个部署的metrics-server可能会有点问题，需要调整`metrics-server-deployment.yaml`。
 
 ### 安装metric-server:
 
-- 安装
+- 安装kubernetes-incubator
 
   ```bash
-  ➜  metrics-server git $ kubectl apply -f ./
+  ➜  yaml $ kubectl apply -f ./kubernetes-incubator/
   clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created
   clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created
   rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created
@@ -56,6 +58,8 @@
   clusterrole.rbac.authorization.k8s.io/system:metrics-server created
   clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created
   ```
+
+  
 
 - 查看Deployment和Pod：
 
@@ -143,3 +147,122 @@
   ubuntu240   112m         2%     2343Mi          29%
   ```
 
+- 查看nodes的接口：
+
+  ```bash
+  root@ubuntu238:~# kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"
+  {"kind":"NodeMetricsList","apiVersion":"metrics.k8s.io/v1beta1","metadata":{"selfLink":"/apis/metrics.k8s.io/v1beta1/nodes"},"items":[{"metadata":{"name":"ubuntu240","selfLink":"/apis/metrics.k8s.io/v1beta1/nodes/ubuntu240","creationTimestamp":"2019-09-16T18:25:59Z"},"timestamp":"2019-09-16T18:25:47Z","window":"30s","usage":{"cpu":"313741047n","memory":"5737468Ki"}},{"metadata":{"name":"ubuntu238","selfLink":"/apis/metrics.k8s.io/v1beta1/nodes/ubuntu238","creationTimestamp":"2019-09-16T18:25:59Z"},"timestamp":"2019-09-16T18:25:38Z","window":"30s","usage":{"cpu":"296100938n","memory":"2751128Ki"}},{"metadata":{"name":"ubuntu239","selfLink":"/apis/metrics.k8s.io/v1beta1/nodes/ubuntu239","creationTimestamp":"2019-09-16T18:25:59Z"},"timestamp":"2019-09-16T18:25:42Z","window":"30s","usage":{"cpu":"207934805n","memory":"5203728Ki"}}]}
+  ```
+
+  
+
+### 通过helm安装
+
+- 下载stable/metrics-server:
+
+  ```bash
+  helm fetch stable/metrics-server
+  
+  tar -zxvf metrics-server-2.8.5.tgz
+  ```
+
+- 查看文件：
+
+  ```bash
+  # tree metrics-server
+  metrics-server
+  ├── Chart.yaml
+  ├── README.md
+  ├── ci
+  │   └── ci-values.yaml
+  ├── templates
+  │   ├── NOTES.txt
+  │   ├── _helpers.tpl
+  │   ├── aggregated-metrics-reader-cluster-role.yaml
+  │   ├── auth-delegator-crb.yaml
+  │   ├── cluster-role.yaml
+  │   ├── metric-server-service.yaml
+  │   ├── metrics-api-service.yaml
+  │   ├── metrics-server-crb.yaml
+  │   ├── metrics-server-deployment.yaml
+  │   ├── metrics-server-serviceaccount.yaml
+  │   ├── pdb.yaml
+  │   ├── psp.yaml
+  │   ├── role-binding.yaml
+  │   └── tests
+  │       └── test-version.yaml
+  └── values.yaml
+  ```
+
+- 根据自己的调整修改
+
+- 安装metric-server:
+
+  安装到`kube-system`的命名空间中
+
+  ```bash
+  helm install --name metrics-server --namespace kube-system ./metrics-server
+  ```
+
+  输出日志：
+
+  ```bash
+  $ helm install --name metrics-server --namespace kube-system ./metrics-server
+  NAME:   metrics-server
+  LAST DEPLOYED: Mon Sep 16 18:20:38 2019
+  NAMESPACE: kube-system
+  STATUS: DEPLOYED
+  
+  RESOURCES:
+  ==> v1/ClusterRole
+  NAME                                     AGE
+  system:metrics-server                    0s
+  system:metrics-server-aggregated-reader  0s
+  
+  ==> v1/ClusterRoleBinding
+  NAME                                  AGE
+  metrics-server:system:auth-delegator  0s
+  system:metrics-server                 0s
+  
+  ==> v1/Deployment
+  NAME            READY  UP-TO-DATE  AVAILABLE  AGE
+  metrics-server  0/1    1           0          0s
+  
+  ==> v1/Pod(related)
+  NAME                             READY  STATUS             RESTARTS  AGE
+  metrics-server-578c8795d7-kfvl9  0/1    ContainerCreating  0         0s
+  
+  ==> v1/Service
+  NAME            TYPE       CLUSTER-IP    EXTERNAL-IP  PORT(S)  AGE
+  metrics-server  ClusterIP  10.126.59.77  <none>       443/TCP  0s
+  
+  ==> v1/ServiceAccount
+  NAME            SECRETS  AGE
+  metrics-server  1        0s
+  
+  ==> v1beta1/APIService
+  NAME                    AGE
+  v1beta1.metrics.k8s.io  0s
+  
+  ==> v1beta1/RoleBinding
+  NAME                        AGE
+  metrics-server-auth-reader  0s
+  
+  NOTES:
+  The metric server has been deployed.
+  
+  In a few minutes you should be able to list metrics using the following
+  command:
+  
+    kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"
+  
+  ```
+
+- helm卸载安装：
+
+  ```bash
+  # helm delete --purge metrics-server
+  release "metrics-server" deleted
+  ```
+
+  
