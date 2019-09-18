@@ -44,6 +44,7 @@
 
   ```bash
   apt install chrony -y
+  systemctl enable chrony.service
   ```
 
 
@@ -64,6 +65,17 @@
   echo deb https://download.ceph.com/debian-mimic/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
   ```
 
+- 查看源：
+
+  > mimic是13.26的，最后安装个老的版本jewel。
+
+  ```bash
+  root@node03:/data# cat /etc/apt/sources.list.d/ceph.list
+  deb https://download.ceph.com/debian-mimic/ xenial main
+  ```
+
+  
+
 - update and install ceph-deploy
 
   ```bash
@@ -80,12 +92,13 @@
   root@node01:~# ceph-deploy --version
   2.0.1
   ```
-
-
+  
 
 ### 部署ceph
 
 - 创建配置文件
+
+  > ceph-deploy new node01 或者 ceph-deploy new node01 node02 node03
 
   ```bash
   root@node01:~# mkdir /etc/ceph
@@ -299,8 +312,9 @@
 - 把配置文件同步到其它2个节点：
 
   ```bash
-  scp -r /etc/ceph/ root@node02:/etc/ceph
-  scp -r /etc/ceph/ root@node03:/etc/ceph
+  # scp -r /etc/ceph/*.keyring root@node02:/etc/ceph
+  # scp -r /etc/ceph/*.keyring root@node03:/etc/ceph
+  root@node01:/etc/ceph# ceph-deploy --overwrite-conf config push node01 node02 node03
   ```
 
 - 在node01上为`node02`和`node03`创建`monitor`
@@ -309,6 +323,8 @@
   root@node01:/etc/ceph# ceph-deploy mon create node02
   root@node01:/etc/ceph# ceph-deploy mon create node03
   ```
+
+  注意开始有执行这个的：`ceph-deploy install node01 node02 node03`
 
   查看状态：`ceph -s`
 
@@ -427,7 +443,39 @@
       pgs:
   ```
 
+- 删掉osd：
 
+  ```bash
+  for i in {0..11}
+  do
+      # 将osd.i的状态设置为out
+      ceph osd down "osd.${i}"
+      ceph osd out "osd.${i}"
+      # 将osd.i从集群删除
+      ceph osd rm "osd.${i}"
+      # 将osd.i 从CRUSH中删除
+      ceph osd crush "osd.${i}"
+      # 删除osd.i的认证信息
+      ceph auth rm "osd.${i}"
+  done
+  ```
+
+  
+
+- 卸载集群重新部署：
+
+  **特别注意**：测试环境使用！！！
+
+  ```bash
+  # 移除ceph
+  ceph-deploy purge node01 node02 node03
+  ceph-deploy forgetkeys
+  
+  # 移除vgs
+  vgs | grep ceph | awk '{print $1}' | xargs vgremove --force
+  ```
+
+  
 
 ### Ceph集群基本使用
 
@@ -567,9 +615,34 @@
   ceph auth list
   ```
 
-  
+- 重启服务：
 
+  ```bash
+  sudo systemctl restart ceph-osd.target
+  sudo systemctl restart ceph-mon.target
+  sudo systemctl restart ceph-mds.target
+  ```
 
+- 查看osd的信息：
+
+  ```bash
+  ceph osd tree
+  ceph daemon osd.1 help
+  ```
+
+### 遇到的问题
+
+1. 执行`ceph-deploy os create node02 --data /dev/sdb`
+
+   >【ceph_deploy.osd】【DEBUG】Creating OSD on cluster ceph with data device /dev/sdb 【ceph_deploy】【ERROR 】 RuntimeError: bootstrap-osd keyring not found; run 'gatherkeys'
+
+   解决方式：执行：
+
+   ```bash
+   ceph-deploy gatherkeys node02
+   ```
+
+   
 
 
 
