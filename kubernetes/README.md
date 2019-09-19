@@ -46,6 +46,7 @@
 ### Storage
 
 - [pod中使用CephFS存储卷](./storage/volume-cephfs.md)
+- [pod中使用Ceph块设备](./storage/volume-ceph-rbd.md)
 - [ceph](./storage/ceph)
   - [ceph-deploy安装Ceph集群](./storage/ceph/ceph-deploy.md)
   - [ceph rbd块设备的基本使用](./storage/ceph/rbd.md)

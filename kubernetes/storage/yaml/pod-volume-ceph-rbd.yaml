@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  containers:
+  - name: simpleweb
+    image: codelieche/simpleweb:v1
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    volumeMounts:
+    - name: data
+      mountPath: /data            # 挂载到容器的目录
+  volumes:
+  - name: data
+    rbd:
+      fsType: ext4
+      image: codelieche
+      monitors:                  # Ceph集群的地址：数组
+      - 192.168.6.166:6789
+      - 192.168.6.167:6789
+      - 192.168.6.168:6789
+      user: rbd                  # 默认是admin的用户
+      pool: rbd                  # 存储池的名称，默认是rbd
+      secretRef:                 # 秘钥资源
+        name: secret-ceph-rbd
