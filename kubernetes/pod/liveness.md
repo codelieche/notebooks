@@ -175,7 +175,7 @@ Liveness探针让用户可以自定义判断容器是否健康。
   Name:         simpleweb
   Namespace:    default
   Priority:     0
-  Node:         ubuntu240/10.90.1.240
+  Node:         ubuntu240/192.168.6.240
   Start Time:   Tue, 03 Sep 2019 00:22:14 -0400
   Labels:       app=simpleweb
   

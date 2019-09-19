@@ -155,9 +155,9 @@
 
   ```bash
   root@ubuntu238:~# kubectl get pods -o wide -n kube-system | grep kube-router
-  kube-router-2zlgs                   1/1     Running            0          13s     10.90.1.239   ubuntu239   <none>           <none>
-  kube-router-qnbd8                   0/1     CrashLoopBackOff   6          10m     10.90.1.240   ubuntu240   <none>           <none>
-  kube-router-v4thf                   0/1     CrashLoopBackOff   6          10m     10.90.1.238   ubuntu238
+  kube-router-2zlgs                   1/1     Running            0          13s     192.168.6.239   ubuntu239   <none>           <none>
+  kube-router-qnbd8                   0/1     CrashLoopBackOff   6          10m     192.168.6.240   ubuntu240   <none>           <none>
+  kube-router-v4thf                   0/1     CrashLoopBackOff   6          10m     192.168.6.238   ubuntu238
   ```
 
   那在其它节点上执行：
@@ -209,19 +209,19 @@
   > > 
   > > # 查看路由
   > > root@ubuntu238:~# ip route
-  > > default via 10.90.15.254 dev ens192
-  > > 10.90.0.0/20 dev ens192  proto kernel  scope link  src 10.90.1.238
-  > > 10.90.1.0/24 dev ens192  proto kernel  scope link  src 10.90.1.236
+  > > default via 192.168.65.254 dev ens192
+  > > 10.90.0.0/20 dev ens192  proto kernel  scope link  src 192.168.6.238
+  > > 192.168.6.0/24 dev ens192  proto kernel  scope link  src 192.168.6.236
   > > 172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1
   > > 172.56.0.0/24 dev cni0  proto kernel  scope link  src 172.56.0.1
-  > > 172.56.1.0/24 via 10.90.1.239 dev ens192  proto 17
-  > > 172.56.2.0/24 via 10.90.1.240 dev ens192  proto 17
+  > > 172.56.1.0/24 via 192.168.6.239 dev ens192  proto 17
+  > > 172.56.2.0/24 via 192.168.6.240 dev ens192  proto 17
   > > 
   > > # traceroute
   > > root@ubuntu238:~# traceroute 172.56.1.2
   > > traceroute to 172.56.1.2 (172.56.1.2), 30 hops max, 60 byte packets
-  > >  1  ubuntu239 (10.90.1.239)  0.441 ms  0.391 ms  0.368 ms
-  > >  2  ubuntu239 (10.90.1.239)  2996.159 ms !H  2996.186 ms !H  2996.170 ms !H
+  > >  1  ubuntu239 (192.168.6.239)  0.441 ms  0.391 ms  0.368 ms
+  > >  2  ubuntu239 (192.168.6.239)  2996.159 ms !H  2996.186 ms !H  2996.170 ms !H
   > > ```
   > >
   > > 
@@ -230,23 +230,23 @@
 
   ```bash
   root@ubuntu239:~# ip route
-  default via 10.90.15.254 dev ens192
-  10.90.0.0/20 dev ens192  proto kernel  scope link  src 10.90.1.239
+  default via 192.168.65.254 dev ens192
+  10.90.0.0/20 dev ens192  proto kernel  scope link  src 192.168.6.239
   172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1 linkdown
-  172.56.0.0/24 via 10.90.1.238 dev ens192  proto 17
+  172.56.0.0/24 via 192.168.6.238 dev ens192  proto 17
   172.56.1.0/24 dev cni0  proto kernel  scope link  src 172.56.1.1
   172.56.1.0/24 dev kube-bridge  proto kernel  scope link  src 172.56.1.1
-  172.56.2.0/24 via 10.90.1.240 dev ens192  proto 17
+  172.56.2.0/24 via 192.168.6.240 dev ens192  proto 17
   
   root@ubuntu239:~# ip route del 172.56.1.0/24 dev cni0  proto kernel  scope link  src 172.56.1.1
   
   root@ubuntu239:~# ip route
-  default via 10.90.15.254 dev ens192
-  10.90.0.0/20 dev ens192  proto kernel  scope link  src 10.90.1.239
+  default via 192.168.65.254 dev ens192
+  10.90.0.0/20 dev ens192  proto kernel  scope link  src 192.168.6.239
   172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1 linkdown
-  172.56.0.0/24 via 10.90.1.238 dev ens192  proto 17
+  172.56.0.0/24 via 192.168.6.238 dev ens192  proto 17
   172.56.1.0/24 dev kube-bridge  proto kernel  scope link  src 172.56.1.1
-  172.56.2.0/24 via 10.90.1.240 dev ens192  proto 17
+  172.56.2.0/24 via 192.168.6.240 dev ens192  proto 17
   ```
 
 - 再次在ubuntu238上执行：
@@ -254,7 +254,7 @@
   ```bash
   root@ubuntu238:~# traceroute 172.56.1.2
   traceroute to 172.56.1.2 (172.56.1.2), 30 hops max, 60 byte packets
-   1  ubuntu239 (10.90.1.239)  0.474 ms  0.414 ms  0.389 ms
+   1  ubuntu239 (192.168.6.239)  0.474 ms  0.414 ms  0.389 ms
    2  172.56.1.2 (172.56.1.2)  0.387 ms  0.326 ms  0.308 ms
    
   root@ubuntu238:~# curl 172.56.1.2:8080

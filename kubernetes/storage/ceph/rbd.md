@@ -50,28 +50,6 @@
   enabled application 'rbd' on pool 'rbd'
   ```
 
-- 查看状态：
-
-  ```bash
-  root@node01:/etc/ceph# ceph -s
-    cluster:
-      id:     0cf94847-c1ea-4b48-8795-55de625e6589
-      health: HEALTH_OK
-  
-    services:
-      mon: 3 daemons, quorum node01,node02,node03
-      mgr: node01(active), standbys: node02, node03
-      osd: 9 osds: 9 up, 9 in
-  
-    data:
-      pools:   1 pools, 300 pgs
-      objects: 0  objects, 0 B
-      usage:   9.4 GiB used, 135 GiB / 144 GiB avail
-      pgs:     300 active+clean
-  ```
-
-  
-
 #### 创建个RBD磁盘
 
 - 创建个image：

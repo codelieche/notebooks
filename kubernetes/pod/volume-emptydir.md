@@ -66,7 +66,7 @@
   Name:         simpleweb
   Namespace:    default
   Priority:     0
-  Node:         ubuntu239/10.90.1.239
+  Node:         ubuntu239/192.168.6.239
   Start Time:   Thu, 05 Sep 2019 00:01:30 -0400
   Labels:       app=simpleweb
   # ....

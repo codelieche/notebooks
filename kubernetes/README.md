@@ -43,6 +43,14 @@
 - [Service的类型](./service/types.md)
 - [通过Ingress暴露服务](./service/ingress.md)
 
+### Storage
+
+- [pod中使用CephFS存储卷](./storage/volume-cephfs.md)
+- [ceph](./storage/ceph)
+  - [ceph-deploy安装Ceph集群](./storage/ceph/ceph-deploy.md)
+  - [ceph rbd块设备的基本使用](./storage/ceph/rbd.md)
+  - [cephFS的基本使用](./storage/ceph/cephfs.md)
+
 ### 其它
 
 - [ubuntu16.04中使用NFS](./other/ubuntu-nfs.md)
