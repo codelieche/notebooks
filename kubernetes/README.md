@@ -48,6 +48,7 @@
   - [pod中使用CephFS存储卷](./storage/volume-cephfs.md)
   - [pod中使用Ceph块设备](./storage/volume-ceph-rbd.md)
 - [pv&pvc 持久卷和持久卷声明](./storage/volume-pv-pvc.md)
+  - [pod中通过PV&PVC使用CephFS](./storage/pv-pvc-cephfs.md)
 - [ceph](./storage/ceph)
   - [ceph-deploy安装Ceph集群](./storage/ceph/ceph-deploy.md)
   - [ceph rbd块设备的基本使用](./storage/ceph/rbd.md)

@@ -96,6 +96,7 @@
       volumeMounts:               # 容器的挂载信息
       - name: data
         mountPath: /data/
+        # subPath: simpleweb      # 可以设置子目录，如果再CephFS中，它会自动创建
     volumes:
     - name: data
       cephfs:
@@ -108,6 +109,7 @@
           name: secret-cephfs
         readOnly: false
         path: /simpleweb          # 挂载cephFS的路径，默认是:/
+        # path: /                 # 推荐容器的volumeMounts中设置subPath,这里设置为/
   ```
 
 - 创建pod：
@@ -132,6 +134,8 @@
   > mount: special device 192.168.6.166:6789,192.168.6.167:6789,192.168.6.168:6789:/simpleweb does not exist
 
   解决方式，去CephFS挂载的根目录下面创建子目录：
+
+  **其实可以挂载CephFS的根目录，然后在容器的volumeMounts中设置`subPath`字段。**
 
   如果未挂载可通过一下命令挂载：
 

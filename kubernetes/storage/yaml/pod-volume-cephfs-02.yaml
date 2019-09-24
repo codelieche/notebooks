@@ -14,7 +14,7 @@ spec:
     volumeMounts:               # 容器的挂载信息
     - name: data
       mountPath: /data/
-      # subPath: simpleweb      # 可以设置子目录，如果再CephFS中，它会自动创建
+      subPath: simpleweb        # 可以设置子目录，如果再CephFS中，它会自动创建
   volumes:
   - name: data
     cephfs:
@@ -26,5 +26,5 @@ spec:
       secretRef:                # ceph集群上的秘钥
         name: secret-cephfs
       readOnly: false
-      path: /simpleweb          # 挂载cephFS的路径，默认是:/
-      # path: /                 # 推荐容器的volumeMounts中设置subPath,这里设置为/
+      # path: /simpleweb        # 挂载cephFS的路径，默认是:/
+      path: /                   # 推荐容器的volumeMounts中设置subPath,这里设置为/
