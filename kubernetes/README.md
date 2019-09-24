@@ -21,12 +21,7 @@
 - [pod之--readinessProbe就绪探针](./pod/readiness.md)
 - [pod中使用宿主机namespace](./pod/host-namespace.md)
 - [pod中容器资源的限制](./pod/requests-limits.md)
-- 存储卷
-  - [在pod中使用emptyDir](./pod/volume-emptydir.md)
-  - [在pod中使用hostPath卷](./pod/volume-hostpath.md)
-  - [在pod中两个容器共用一个存储卷](./pod/volume-share.md)
-  - [pv&pvc 持久卷和持久卷声明](./pod/volume-pv-pvc.md)
-  - [在pod中使用NFS卷](./pod/volume-nfs.md)
+- - 
 - [pod自动伸缩](./pod/auto-scale.md)
 - [pod的网络策略](./pod/network-policy.md)
 - [pod的调度](./pod/schedule.md)
@@ -45,8 +40,14 @@
 
 ### Storage
 
-- [pod中使用CephFS存储卷](./storage/volume-cephfs.md)
-- [pod中使用Ceph块设备](./storage/volume-ceph-rbd.md)
+- 存储卷
+  - [在pod中使用emptyDir](./storage/volume-emptydir.md)
+  - [在pod中使用hostPath卷](./storage/volume-hostpath.md)
+  - [在pod中两个容器共用一个存储卷](./storage/volume-share.md)
+  - [在pod中使用NFS卷](./storage/volume-nfs.md)
+  - [pod中使用CephFS存储卷](./storage/volume-cephfs.md)
+  - [pod中使用Ceph块设备](./storage/volume-ceph-rbd.md)
+- [pv&pvc 持久卷和持久卷声明](./storage/volume-pv-pvc.md)
 - [ceph](./storage/ceph)
   - [ceph-deploy安装Ceph集群](./storage/ceph/ceph-deploy.md)
   - [ceph rbd块设备的基本使用](./storage/ceph/rbd.md)
