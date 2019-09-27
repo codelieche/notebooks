@@ -148,4 +148,120 @@
   run called
   ```
 
+- 修改下`run.go`
+
+  ```go
+  package cmd
   
+  import (
+  	"fmt"
+  	"log"
+  	"os/exec"
+  	"strings"
+  
+  	"github.com/spf13/cobra"
+  )
+  
+  var cmdString string
+  
+  // runCmd represents the run command
+  var runCmd = &cobra.Command{
+  	Use:   "run",
+  	Short: "执行run命令",
+  	Long: `执行run命令:
+  传递想要执行的子命令，然后执行，比如：ls, pwd等.`,
+  	// 传递的args的个数
+  	Args: cobra.MinimumNArgs(0),
+  	Run: func(cmd *cobra.Command, args []string) {
+  		log.Println("run called")
+  
+  		//cmdString := strings.Join(args, " ")
+  		log.Println("cmdString:", cmdString)
+  		log.Println("args：", args)
+  		if cmdString == "" {
+  			cmdString = "ls"
+  		}
+  
+  		commandString := cmdString
+  		switch cmdString {
+  		case "ls", "ls -a", "ls -al", "ls -l", "tree":
+  			commandString = fmt.Sprintf("%s %s", cmdString, strings.Join(args, " "))
+  		case "pwd":
+  			commandString = "pwd"
+  		default:
+  			log.Println("当前执行的命令是：", cmdString, "不可执行")
+  			return
+  		}
+  
+  		log.Println("开始执行命令：", commandString)
+  
+  		// 执行命令并输出
+  		cmdBash := exec.Command("/bin/bash", "-c", commandString)
+  		if results, err := cmdBash.CombinedOutput(); err != nil {
+  			fmt.Println("执行出错,", err.Error())
+  			panic(err)
+  		} else {
+  			// 打印输出：byte
+  			// fmt.Println(results)
+  			fmt.Println(string(results))
+  		}
+  	},
+  }
+  
+  func init() {
+  	rootCmd.AddCommand(runCmd)
+  	// 处理子命令相关的参数
+  	runCmd.Flags().StringVarP(&cmdString, "command", "c", "ls", "执行bash的命令")
+  
+  }
+  ```
+
+- 再次测试：
+
+  - 直接运行：
+
+    ```bash
+    # go run main.go run        
+    2019/09/27 11:17:33 run called
+    2019/09/27 11:17:33 cmdString: ls
+    2019/09/27 11:17:33 args： []
+    2019/09/27 11:17:33 开始执行命令： ls 
+    LICENSE
+    cmd
+    main.go
+    ```
+
+  - 传入command参数：
+
+    ```bash
+    # go run main.go run --command=tree
+    2019/09/27 11:18:29 run called
+    2019/09/27 11:18:29 cmdString: tree
+    2019/09/27 11:18:29 args： []
+    2019/09/27 11:18:29 开始执行命令： tree 
+    .
+    ├── LICENSE
+    ├── cmd
+    │   ├── root.go
+    │   └── run.go
+    └── main.go
+    
+    1 directory, 4 files
+    ```
+
+  - 执行ls并传入args
+
+    ```bash
+    # go run main.go run --command="ls -al" ./cmd
+    2019/09/27 11:19:49 run called
+    2019/09/27 11:19:49 cmdString: ls -al
+    2019/09/27 11:19:49 args： [./cmd]
+    2019/09/27 11:19:49 开始执行命令： ls -al ./cmd
+    total 16
+    drwxr-x--x  4 alex.zhou  staff   128 Sep 27 11:15 .
+    drwxr-xr--  5 alex.zhou  staff   160 Sep 26 20:52 ..
+    -rw-r--r--  1 alex.zhou  staff  2767 Sep 27 10:08 root.go
+    -rw-r--r--  1 alex.zhou  staff  2434 Sep 27 11:15 run.go
+    ```
+
+    
