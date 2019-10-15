@@ -226,7 +226,11 @@ and check to make sure that only the key(s) you wanted were added.
   /dev/mapper/data--vg-data--lv /data ext4 defaults 0 0
   ```
 
-  
+
+### ntp同步时间
+
+- `apt-get install ntpdate`
+- `ntpdate 192.168.6.238`或者`ntpdate time.ntp.org`
 
 ### chrony时间同步
 
