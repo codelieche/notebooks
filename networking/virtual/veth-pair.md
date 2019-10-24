@@ -111,7 +111,7 @@
   >
   > 就是向veth pair设备的一端输入的数据包，数据包通过内核协议栈从veth pair的另一端出来。
 
-  ![veth pair原理](../image/veth-pair-01.png)
+  ![veth pair原理](../image/veth-pair-01.jpg)
 
   **veth pair 在转发过程中不会篡改数据包的内容。**
 
