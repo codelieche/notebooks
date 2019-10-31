@@ -32,9 +32,13 @@
   ip_tunnel              28672  1 ipip
   ```
 
+- 移除内核模块：
 
+  ```bash
+  rmmod ipip
+  ```
 
-### 创建ipip隧道
+#### 创建ipip隧道
 
 > 加载了ipip内核模块后，就可以创建隧道了。
 >
@@ -43,7 +47,125 @@
 > 1. 先创建一个`tun`设备
 > 2. 将该tun设备绑定为一个`ipip`隧道
 
+---
 
+### 2台主机之间创建ip tunnel
+
+> 首先开启内核模块ipip.ko的支持。
+>
+> ```bash
+> root@ubuntu:~# lsmod | grep ipip
+> root@ubuntu:~# modprobe ipip
+> root@ubuntu:~# lsmod | grep ipip
+> ipip                   16384  0
+> tunnel4                16384  1 ipip
+> ip_tunnel              24576  1 ipip
+> ```
+
+**如果要移除内核加载的模块，可用：`rmmod ipip`**
+
+![](../image/tunnel-ipip-hosts.jpg)
+
+#### 创建ipip tunnel
+
+- **`Host-01`执行：**
+
+  ```bash
+  ip tunnel add tun01 mode ipip remote 192.168.1.129 local 10.90.6.238
+  ip link set tun01 up
+  ip addr add 172.66.1.101 peer 172.66.2.101 dev tun01
+  ip addr
+  ```
+
+- **`Host-02`执行：**
+
+  ```bash
+  ip tunnel add tun02 mode ipip remote 10.90.6.238 local 192.168.1.129
+  ip link set tun02 up
+  ip addr add 172.66.2.101 peer 172.66.1.101 dev tun02
+  ip addr
+  ```
+
+- **检查/开启ip_forward：**
+
+  ```bash
+  cat /proc/sys/net/ipv4/ip_forward
+  echo 1 > /proc/sys/net/ipv4/ip_forward
+  
+  sysctl -a | grep ip_forward
+  ```
+
+#### 执行ping操作
+
+> `Host-01`: 执行` ping -c 3 172.66.2.101`和`tcpdump -n -i tun01`
+>
+> `Host-02`: 执行`tcpdump -n -i tun02`
+
+- `Host-01`执行ping：
+
+  ```bash
+  root@ubuntu238:~# ping -c 3 172.66.2.101
+  PING 172.66.2.101 (172.66.2.101) 56(84) bytes of data.
+  64 bytes from 172.66.2.101: icmp_seq=1 ttl=64 time=0.320 ms
+  64 bytes from 172.66.2.101: icmp_seq=2 ttl=64 time=0.256 ms
+  64 bytes from 172.66.2.101: icmp_seq=3 ttl=64 time=0.789 ms
+  
+  --- 172.66.2.101 ping statistics ---
+  3 packets transmitted, 3 received, 0% packet loss, time 2074ms
+  rtt min/avg/max/mdev = 0.256/0.455/0.789/0.237 ms
+  ```
+
+- `Host-01`执行抓包：
+
+  ```bash
+  root@ubuntu238:~# tcpdump -n -i tun01
+  tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+  listening on tun01, link-type RAW (Raw IP), capture size 262144 bytes
+  17:42:35.583003 IP 172.66.1.101 > 172.66.2.101: ICMP echo request, id 18766, seq 1, length 64
+  17:42:35.583201 IP 172.66.2.101 > 172.66.1.101: ICMP echo reply, id 18766, seq 1, length 64
+  17:42:36.583600 IP 172.66.1.101 > 172.66.2.101: ICMP echo request, id 18766, seq 2, length 64
+  17:42:36.583810 IP 172.66.2.101 > 172.66.1.101: ICMP echo reply, id 18766, seq 2, length 64
+  17:42:37.607561 IP 172.66.1.101 > 172.66.2.101: ICMP echo request, id 18766, seq 3, length 64
+  17:42:37.607733 IP 172.66.2.101 > 172.66.1.101: ICMP echo reply, id 18766, seq 3, length 64
+  ```
+
+- `Host-02`执行：
+
+  ```bash
+  root@ubuntu129:~# tcpdump -n -i tun02
+  tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+  listening on tun02, link-type RAW (Raw IP), capture size 262144 bytes
+  17:38:19.671629 IP 172.66.1.101 > 172.66.2.101: ICMP echo request, id 18275, seq 1, length 64
+  17:38:19.671663 IP 172.66.2.101 > 172.66.1.101: ICMP echo reply, id 18275, seq 1, length 64
+  17:38:20.721720 IP 172.66.1.101 > 172.66.2.101: ICMP echo request, id 18275, seq 2, length 64
+  17:38:20.721749 IP 172.66.2.101 > 172.66.1.101: ICMP echo reply, id 18275, seq 2, length 64
+  17:38:21.746206 IP 172.66.1.101 > 172.66.2.101: ICMP echo request, id 18275, seq 3, length 64
+  17:38:21.746230 IP 172.66.2.101 > 172.66.1.101: ICMP echo reply, id 18275, seq 3, length 64
+  ```
+
+#### 抓包
+
+> 执行：`tcpdump -n -i eth0 -w ipip-test.cap`
+>
+> 然后用Wireshark打开查看。
+
+#### 清理：
+
+> 如果要关闭ipip模块，执行`rmmod ipip`
+
+- `Host-01`清理命令:
+
+  ```bash
+  ip link delete tun01
+  ```
+
+- `Host-02`清理命令：
+
+  ```bash
+  ip link delete tun02
+  ```
+
+---
 
 ### 不同Network Namespace使用ipip隧道
 
