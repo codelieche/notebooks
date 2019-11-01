@@ -287,5 +287,4 @@
   ip netns delete study02
   ```
 
-  
 
