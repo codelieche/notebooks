@@ -1,4 +1,4 @@
-FROM percona:5.6.45-centos
+FROM percona:5.7.26-centos
 
 USER root
 RUN yum update -y && yum install -y wget vim sudo tree net-tools percona-xtrabackup-24 \
@@ -17,8 +17,8 @@ VOLUME ["/var/lib/mysql", "/var/log/mysql", "/backup"]
 ENV MYSQL_ROOT_PASSWORD=changeme
 
 COPY ./backup/ /backup/
-RUN chown mysql:mysql -R /backup/
+RUN chown mysql:mysql -R /backup/ && cat /backup/my.cnf > /etc/my.cnf
 
 USER mysql
-RUN cat /backup/my.cnf > /etc/my.cnf
+# RUN cat /backup/my.cnf > /etc/my.cnf
 CMD ["/bin/bash", "-c", "/docker-entrypoint.sh mysqld"]

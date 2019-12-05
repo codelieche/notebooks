@@ -92,8 +92,12 @@ fullBackupFunc()
     cd ${BackupFullPath} && ls   | xargs -n1 rm -r;
 
     # 执行全量备份
-    /usr/bin/innobackupex --user=${MYSQL_USER} --password=${MYSQL_PASSWORD}   --ftwrl-wait-threshold=60 --ftwrl-wait-timeout=120  \
-    --stream=${STREAM} --compress  --extra-lsndir=${FULLLSN} ${TMPDIR}  | xbstream -x -C ${BackupFullPath};
+    /usr/bin/xtrabackup   --user=${MYSQL_USER} --password=${MYSQL_PASSWORD}  \
+    --ftwrl-wait-threshold=60 --ftwrl-wait-timeout=120 \
+    --extra-lsndir=${FULLLSN} \
+    --backup --target-dir=${BackupFullPath}
+    # /usr/bin/innobackupex --user=${MYSQL_USER} --password=${MYSQL_PASSWORD}   --ftwrl-wait-threshold=60 --ftwrl-wait-timeout=120  \
+    # --stream=${STREAM} --compress  --extra-lsndir=${FULLLSN} ${TMPDIR}  | xbstream -x -C ${BackupFullPath};
 
     # 判断执行全部是否成功
     if [ $? -eq 0 ];then
@@ -131,9 +135,14 @@ increBackupFunc()
   [ -d ${BackupIncrementPath}/${DateFormat} ] || { /bin/mkdir ${BackupIncrementPath}/${DateFormat}; };
 
   # 执行增量备份
-  /usr/bin/innobackupex --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} --ftwrl-wait-threshold=60 --ftwrl-wait-timeout=120   \
-  --stream=${STREAM} --compress  --extra-lsndir=${INCLSN}/${DateFormat} ${TMPDIR} \
-  --incremental  --incremental-basedir=${FULLLSN} | xbstream -x -C ${BackupIncrementPath}/${DateFormat};
+  /usr/bin/xtrabackup   --user=${MYSQL_USER} --password=${MYSQL_PASSWORD}  \
+    --ftwrl-wait-threshold=60 --ftwrl-wait-timeout=120 \
+    --extra-lsndir=${INCLSN}/${DateFormat} \
+    --extra-lsndir=${FULLLSN} \
+    --backup  --incremental-basedir=${FULLLSN} --target-dir=${BackupFullPath}
+  #/usr/bin/innobackupex --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} --ftwrl-wait-threshold=60 --ftwrl-wait-timeout=120   \
+  #--stream=${STREAM} --compress  --extra-lsndir=${INCLSN}/${DateFormat} ${TMPDIR} \
+  #--incremental  --incremental-basedir=${FULLLSN} | xbstream -x -C ${BackupIncrementPath}/${DateFormat};
 
   # 判断执行是否成功
   if [ $? -eq 0 ];then
