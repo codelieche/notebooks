@@ -1,7 +1,7 @@
 FROM percona:8.0-centos
 
 USER root
-RUN yum update -y && yum install -y wget vim sudo tree net-tools percona-xtrabackup-80 \
+RUN yum update -y && yum install -y wget vim sudo tree net-tools percona-xtrabackup-80 percona-toolkit \
     && yum clean all \
     && rm -rf /var/cache/yum
 # RUN yum install -y https://repo.percona.com/yum/percona-release-latest.noarch.rpm

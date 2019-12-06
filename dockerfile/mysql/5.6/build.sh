@@ -11,4 +11,4 @@ docker build . -t "$NAME:$TAG" && echo "$(date +"%F %T"): 构建成功!！" || (
 docker tag "$NAME:$TAG" "codelieche/$NAME:$TAG"
 
 # 创建一个测试的容器
-docker run -it --rm -v "${PWD}/data:/var/lib/mysql" --name mysql-t1 "$NAME:$TAG" /bin/bash
+docker run -it --rm -p 3306:3306 -v "${PWD}/data:/var/lib/mysql" --name mysql-t1 "$NAME:$TAG" /bin/bash
