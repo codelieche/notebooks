@@ -33,3 +33,15 @@ docker images | grep none | awk '{print $3}' | xargs docker rmi
 DEBIAN_FRONTEND=noninteractive apt-get -y install percona-server-server-5.6
 ```
 **加了`DEBIAN_FRONTEND=noninteractive`这个就不会提示设置`root`密码了**。
+
+#### DEBIAN_FRONTEND
+- **Debian系统中：**  默认是`newt`  
+```
+DEBIAN_FRONTEND=noninteractive|text|newt|gtk|corba
+```
+- **Ubuntu系统中：**增加了`dialog|readline|gnome|kde|editor|web`这几个值  
+默认是`dialog`，安装过程不支持`dialog`则是`readline`  
+
+```
+DEBIAN_FRONTEND=noninteractive|text|newt|gtk|corba|dialog|readline|gnome|kde|editor|web
+```
