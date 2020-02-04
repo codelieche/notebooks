@@ -7,7 +7,7 @@
 DatabaseName=$1          # 数据库服务的名字【加个子目录，方便区分，防止混淆】
 MYSQL_USER=$2            # 数据库用户名
 MYSQL_PASSWORD=$3        # 数据库密码
-BACKUP_HOST_USER=$4         # 远程备份的服务器用户
+BACKUP_HOST_USER=$4      # 远程备份的服务器用户
 BACKUP_HOST=$5           # 远程备份的服务器地址
 #日期格式
 DateFormat=`date +%F`    # 日期格式：2019-12-04
@@ -16,7 +16,7 @@ Time=`date +%T`          # 时间： 15:20:40
 DateNum=`date +%d`       # 日期天数：01
 #数据和日志路径
 BackupRootDir=/backup                                        # 备份存储的根目录【远程】
-ExecuteLogPath=/var/log/dbbackup/$DatabaseName             # 执行数据库备份操作的日志路径【本地】
+ExecuteLogPath=/var/log/dbbackup/$DatabaseName               # 执行数据库备份操作的日志路径【本地】
 BackupFullPath=$BackupRootDir/$DatabaseName/fullbackup       # 数据库全量备份的目录【远程】
 BackupIncrementPath=$BackupRootDir/$DatabaseName/increment   # 数据库增量备份的目录【基于全备做增备】
 MycnfPath=$BackupRootDir/$DatabaseName/etc                   # 数据库的配置文件【远程】
@@ -151,6 +151,30 @@ configBackupFunc()
   [ -f /etc/mysql/my.cnf ] && scp  /etc/mysql/my.cnf ${BACKUP_HOST_USER}@${BACKUP_HOST}:${MycnfPath}/mysql_my.cnf.${DateFormat}
 }
 
+# 数据和索引碎片整理
+function defragFunc()
+{
+  # 整理数据表真实数据小于10G的物理碎片
+  echo "$(date +'%F %T'):  ============ 整理数据包真实数据小于10G的物理碎片 ===============";
+  DEFRAG_SIZE=100   # 整理的大小
+  DEFRAG_SQL="select table_schema as '库名',table_name as '表名',engine as '存储引擎',table_rows as '行数',trim(concat(round(DATA_LENGTH/1024/1024, 1))) as '数据大小MB    ',trim(round(index_length/1024/1024,1)) as '索引大小MB',trim(round(DATA_FREE/1024/1024,1)) AS '碎片大小MB' from information_schema.TABLES where table_schema  not in  (    'information_schema','phpmyadmin','scripts','test','performance_schema','mysql') and DATA_FREE/1024/1024 > ${DEFRAG_SIZE}  and DATA_LENGTH/1024/1024/1024 < 1  order by DATA_LENGTH desc;"
+  # 执行sql
+  mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "${DEFRAG_SQL}" > fragment.txt;
+  if [ -s fragment.txt ]; then
+    echo "$(date +'%F %T'):  ============ 开始数据碎片整理 ===============";
+    mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -t -e "${DEFRAG_SQL}";
+    cat fragment.txt | grep MyISAM | awk '{print "optimize table "$1"."$2";"}' | tee MyISAM_fragment.sql;
+    [ -s  MyISAM_fragment.sql} ] && { mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "source MyISAM_fragment.sql;";  }
+    cat fragment.txt| grep InnoDB | awk '{print "alter table "$1"."$2" engine=innodb;"}' | tee InnoDB_fragment.sql
+    [ -s InnoDB_fragment.sql ] && { mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "source InnoDB_fragment.sql;";  }
+    rm MyISAM_fragment.sql InnoDB_fragment.sql
+  else
+     echo "$(date +'%F %T'): 数据碎片没有超过${DEFRAG_SIZE}M！";
+  fi
+  
+  rm fragment.txt;
+  echo "$(date +'%F %T'):  ============ 数据碎片整理完成！ ===============";
+}
 
 # 全量备份函数
 fullBackupFunc()
@@ -230,14 +254,20 @@ mainFunc()
 {
     # 清除日志
     clearLogFunc
+
     # 检查软件
     softCheckFunc
+
     # 判断是否成功
     [ $? -eq 0 ] || { echo "xtrabackup software install fialure" "increment"; exit 1; };
+
     # 检查目录
     dirCheckFunc
     [ $? -eq 0 ] || { sendMessageFunc "failed" "relative dirctory create failure" "increment"  "null"  "$BackupIncrementPath"; exit 1; };
-
+    
+    # 执行整理碎片
+    defragFunc
+    [ $? -eq 0 ] || { echo -e "$(date +'%F %T'): \033[41;37m 整理碎片出错，程序退出！\033[0m"; exit 1; }
     # 判断上面的检查操作手法成功
     if [ $? -eq 0 ];then
         # 判断增量备份需要的文件是否存在、判断日期是否是月初
