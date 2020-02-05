@@ -22,6 +22,7 @@ BackupFullPath=${BackupRootDir}/${DatabaseName}/fullbackup     # 数据库全量
 BackupIncrementPath=${BackupRootDir}/${DatabaseName}/increment # 数据库增量备份的目录
 BackupArchivePath=${BackupRootDir}/${DatabaseName}/archive     # 归档备份目录【tar.gz的文件】
 TMPDIR=/tmp                                                    # 临时目录
+BinlogPrefix=mysql-bin                                         # 二进制日志的前缀
 
 # 检查输入参数
 [ $# -eq 3 ] || { echo -e "\033[41;37m [ERROR] \033[0m example : bash ~/recover.sh codeliechedb 2020-02-02 18:00:00"; exit 1; }
@@ -248,6 +249,64 @@ incRestoreFunc()
 
 }
 
+# 二进制文件恢复:
+# 流程：
+# 1. 先准备好全备/增备文件
+# 2. 复制出二进制文件到：/backup/xxx/binlog/
+# 3. 执行备份恢复, 现在有了xtrabackup_info了
+# 4. 执行binlogRestoreFunc, 得到sql文件
+# 5. 启动数据库把sql重放一次
+binlogRestoreFunc()
+{
+    if [[ -d ${BinlogPath} && `ls -l ${BinlogPath} | wc -l` -gt 1 ]];then
+        # 从xtrabackup_info中获取到innobackupex的结束时间，也就是二进制恢复的开始时间
+        restoreStartTime=$(cat ${BackupFullPath}/xtrabackup_info | grep end_time | cut -d" " -f3-4);
+        restoreInputTime=$(echo "${INCDIR} ${RecoveryTime}");
+        echo "`date +%F`: 二进制恢复开始时间(restoreStartTime)：${restoreStartTime}";
+        echo "`date +%F`: 二进制恢复输入的截止时间(restoreInputTime)：${restoreInputTime}";
+
+        # 获取二进制日志文件的开始时间和结束时间
+        startTime=$(ls -lrt  ${BinlogPath} --full-time | awk -F " " '{print $6,$7}' | sed  '1d' | sed 's/\..*//g'|sed -n '1p');
+        lastTime=$(ls -lrt ${BinlogPath} --full-time | awk -F " " '{print $6,$7}' | sed  '1d' | sed 's/\..*//g'|sed -n '$p');
+
+        echo "`date +%F`: 二进制日志开始的时间(startTime)：${startTime}";
+        echo "`date +%F`: 二进制日志结束的时间(lastTime)：${lastTime}";
+
+        if [[  $(date -d  "${restoreInputTime}" +%s)   -lt $(date -d  "${lastTime}" +%s)   ]];then
+
+            if [[  $(date -d  "${startTime}" +%s) -lt $(date -d  "${restoreStarttime}" +%s) && \
+               $(date -d "${lastTime}" +%s) -gt $(date -d  "${restoreStarttime}" +%s)  ]];then
+                # 把二进制日志中的语句写入到sql中
+                echo "mysqlbinlog -vv --start-datetime=\"${restoreStartTime}\" --stop-datetime=\"${restoreInputTime}\" 
+                ${BinlogPath}/${BinlogPrefix}* > ${BackupFullPath}/recovery_${DatabaseName}_${INCDIR}_${RecoveryTime}.sql";
+
+                mysqlbinlog -vv --start-datetime="${restoreStartTime}" --stop-datetime="${restoreInputTime}" \
+                 ${BinlogPath}/${BinlogPrefix}* > ${BackupFullPath}/recovery_${DatabaseName}_${INCDIR}_${RecoveryTime}.sql;
+                Result=$?;
+            else
+                # 时间不对
+                echo -e "$(date +'%F %T'): \033[41;37m [Error] \033[0m 二进制日志不存在！";
+                exit 1;
+            fi
+
+        else
+            echo -e "$(date +'%F %T'): \033[41;37m [Error] \033[0m ${restoreInputTime} 小于 ${lastTime}";
+            exit 1;
+        fi
+    else
+        echo -e "$(date +'%F %T'): \033[41;37m [Error] \033[0m Binlog文件不存在！";
+        exit 1;
+    fi
+
+    # 对结果进行判断
+    if [ $Result -eq 0 ]; then
+        echo "$(date +'%F %T'): Binlog Restore Success";
+    else
+        echo -e "$(date +'%F %T'): \033[41;37m [Error] \033[0m Binlog Restore Failure";
+        exit 1;
+    fi
+}
+
 # 恢复数据函数
 restoreDatabaseFunc()
 {
@@ -309,5 +368,7 @@ mainFunc()
     echo "$(date +'%F %T'): Done";
 }
 
+echo "$(date +'%F %T'): Start";
 mainFunc #> ${ExecuteLogPath}/recover_${DateFormat}.log 2>$1
-echo "Done";
+# binlogRestoreFunc  # 二进制日志 -> .sql
+echo "$(date +'%F %T'): Done";
