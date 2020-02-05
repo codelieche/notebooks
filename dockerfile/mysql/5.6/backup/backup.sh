@@ -257,13 +257,12 @@ mainFunc()
 
     # 检查软件
     softCheckFunc
-
     # 判断是否成功
-    [ $? -eq 0 ] || { echo "xtrabackup software install fialure" "increment"; exit 1; };
+    [ $? -eq 0 ] || { echo -e "$(date +'%F %T'): \033[41;37m Error: \033[0m 执行检查软件失败！"; exit 1; };
 
     # 检查目录
     dirCheckFunc
-    [ $? -eq 0 ] || { sendMessageFunc "failed" "relative dirctory create failure" "increment"  "null"  "$BackupIncrementPath"; exit 1; };
+    [ $? -eq 0 ] || { echo -e "$(date +'%F %T'): \033[41;37m Error: \033[0m 执行目录检查失败！"; exit 1; };
     
     # 执行整理碎片
     defragFunc
