@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: simpleweb-virtual-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - simpleweb-gateway
+  http:
+  - match:
+    - uri:
+        exact: /
+    - uri:
+        exact: /health
+    - uri:
+        prefix: /api
+    - uri:
+        prefix: /request
+    route:
+    - destination:
+        host: simpleweb
+        port:
+          number: 80
