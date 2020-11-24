@@ -13,8 +13,16 @@
 
 - [开启istio-injection](./base/istio-injection.md)
 - [istioctl执行注入](./base/istioctl-kube-injection.md)
+- [Gateway VritualService基本使用](./base/gateway-virtual-service.md)
+- [Gateway VirtualService配置Host基本使用](base/gateway-vs-host.md)
+- [DestinatioonRule基本使用](./base/destination-rule.md)
 
 
+
+### VirtualService
+
+- [实验准备](./virtual-service/setup.md)
+- 
 
 ### 参考文档
 
