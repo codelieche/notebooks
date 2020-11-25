@@ -22,7 +22,12 @@
 ### VirtualService
 
 - [实验准备](./virtual-service/setup.md)
-- 
+- [VirtualService基本使用](./virtual-service/base.md)
+- [根据headers访问不同的后端](./virtual-service/match-headers.md)
+- [设置VirtualService的路由权重](./virtual-service/weight.md)
+- [故障注入--延时响应](./virtual-service/http-fault-delay.md)
+- [故障注入--抛出HTTP错误](./virtual-service/http-fault-abort.md)
+- [流量镜像](./virtual-service/mirroring.md)
 
 ### 参考文档
 

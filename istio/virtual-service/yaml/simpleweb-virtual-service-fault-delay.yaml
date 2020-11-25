@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: simpleweb
+  labels:
+    app: simpleweb
+spec:
+  hosts:
+  - "simpleweb.codelieche.com"
+  gateways:
+  - simpleweb
+  http:
+  - match:
+    - uri:
+        prefix: /api
+    fault:            # 设置50%的请求，延时2秒
+      delay:
+        fixedDelay: 2s
+        percentage: 
+          value: 50
+    route:
+    - destination:
+        host: simpleweb
+  - route:
+    - destination:
+        host: simpleweb
