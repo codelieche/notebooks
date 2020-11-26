@@ -28,6 +28,7 @@
 - [故障注入--延时响应](./virtual-service/http-fault-delay.md)
 - [故障注入--抛出HTTP错误](./virtual-service/http-fault-abort.md)
 - [流量镜像](./virtual-service/mirroring.md)
+- [地址重写](./virtual-serrvice/rewhite.md)
 
 ### 参考文档
 
